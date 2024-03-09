@@ -1,7 +1,36 @@
 package style
 
+import (
+	"encoding/binary"
+	"hvif/transform"
+	"io"
+)
+
 type Type uint8
 type GradientType uint8
+type GradientFlag uint8
+type Style struct {
+	isColor    bool
+	isGradient bool
+	color      Color
+	gradient   Gradient
+}
+
+func (s Style) Gradient() (Gradient, bool) {
+	return s.gradient, s.isGradient
+}
+
+func (s Style) Color() (Color, bool) {
+	return s.color, s.isColor
+}
+
+func styleFromGradient(g Gradient) Style {
+	return Style{isGradient: true, gradient: g}
+}
+
+func styleFromColor(c Color) Style {
+	return Style{isColor: true, color: c}
+}
 
 const (
 	StyleSolidColor Type = 1 + iota
@@ -20,6 +49,30 @@ const (
 	GradientSqrtXY
 )
 
+const (
+	GradientFlagTransform GradientFlag = 1 << (1 + iota)
+	GradientFlagNoAlpha
+	GradientFlag16BitColors // Unused
+	GradientFlagGrays
+)
+
+type Color struct {
+	Red   uint8
+	Green uint8
+	Blue  uint8
+	Alpha uint8
+}
+
+type GradientColor struct {
+	StopOffset uint8
+	Color
+}
+type Gradient struct {
+	Type          GradientType
+	Transformable *transform.Transformable
+	Colors        []GradientColor
+}
+
 type SolidColor struct {
 	Red   uint8
 	Green uint8
@@ -27,9 +80,13 @@ type SolidColor struct {
 	Alpha uint8
 }
 
-type Gradient struct {
-	Type   GradientType
-	Colors []GradientColor
+func (sc SolidColor) ToColor() Color {
+	return Color{
+		Red:   sc.Red,
+		Green: sc.Green,
+		Blue:  sc.Blue,
+		Alpha: sc.Alpha,
+	}
 }
 
 type SolidColorNoAlpha struct {
@@ -38,19 +95,112 @@ type SolidColorNoAlpha struct {
 	Blue  uint8
 }
 
+func (scna SolidColorNoAlpha) ToColor() Color {
+	return Color{
+		Red:   scna.Red,
+		Green: scna.Green,
+		Blue:  scna.Blue,
+		Alpha: 0xff,
+	}
+}
+
 type SolidGray struct {
 	Gray  uint8
 	Alpha uint8
+}
+
+func (sg SolidGray) ToColor() Color {
+	return Color{
+		Red:   sg.Gray,
+		Green: sg.Gray,
+		Blue:  sg.Gray,
+		Alpha: sg.Alpha,
+	}
 }
 
 type SolidGrayNoAlpha struct {
 	Gray uint8
 }
 
-type GradientColor struct {
-	StopOffset uint8
-	Alpha      uint8
-	Red        uint8
-	Green      uint8
-	Blue       uint8
+func (sgna SolidGrayNoAlpha) ToColor() Color {
+	return Color{
+		Red:   sgna.Gray,
+		Green: sgna.Gray,
+		Blue:  sgna.Gray,
+		Alpha: 0xff,
+	}
+}
+
+func Read(r io.Reader) Style {
+	var styleType Type
+	binary.Read(r, binary.LittleEndian, &styleType)
+	switch styleType {
+	case StyleSolidColor:
+		var c SolidColor
+		binary.Read(r, binary.LittleEndian, &c)
+		return styleFromColor(c.ToColor())
+	case StyleSolidColorNoAlpha:
+		var c SolidColorNoAlpha
+		binary.Read(r, binary.LittleEndian, &c)
+		return styleFromColor(c.ToColor())
+	case StyleSolidGray:
+		var c SolidGray
+		binary.Read(r, binary.LittleEndian, &c)
+		return styleFromColor(c.ToColor())
+	case StyleSolidGrayNoAlpha:
+		var c SolidGrayNoAlpha
+		binary.Read(r, binary.LittleEndian, &c)
+		return styleFromColor(c.ToColor())
+	case StyleGradient:
+		var g Gradient
+		var gradientType GradientType
+		var gradientFlags GradientFlag
+		var ncolors uint8
+		binary.Read(r, binary.LittleEndian, &gradientType)
+		binary.Read(r, binary.LittleEndian, &gradientFlags)
+		binary.Read(r, binary.LittleEndian, &ncolors)
+
+		g.Type = gradientType
+		if gradientFlags&GradientFlagTransform == 1 {
+			t := transform.ReadTransformable(r)
+			g.Transformable = &t
+		}
+
+		for i := byte(0); i < ncolors; i++ {
+			var color Color
+			var offset uint8
+			binary.Read(r, binary.LittleEndian, &offset)
+
+			if gradientFlags&GradientFlagGrays == 1 {
+				if gradientFlags&GradientFlagNoAlpha == 1 {
+					var gc SolidGrayNoAlpha
+					binary.Read(r, binary.LittleEndian, &gc)
+					color = gc.ToColor()
+				} else {
+					var gc SolidGray
+					binary.Read(r, binary.LittleEndian, &gc)
+					color = gc.ToColor()
+				}
+			} else {
+				if gradientFlags&GradientFlagNoAlpha == 1 {
+					var gc SolidColorNoAlpha
+					binary.Read(r, binary.LittleEndian, &gc)
+					color = gc.ToColor()
+				} else {
+					var gc SolidColor
+					binary.Read(r, binary.LittleEndian, &gc)
+					color = gc.ToColor()
+				}
+			}
+
+			g.Colors = append(g.Colors, GradientColor{
+				StopOffset: offset,
+				Color:      color,
+			})
+		}
+
+		return styleFromGradient(g)
+	}
+
+	return Style{}
 }
