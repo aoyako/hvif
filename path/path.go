@@ -38,7 +38,7 @@ type Curve struct {
 	PointOut Point
 }
 
-func Parse(r io.Reader) []Path {
+func Read(r io.Reader) []Path {
 	var path []Path
 	var pathType Type
 	binary.Read(r, binary.LittleEndian, &pathType)
