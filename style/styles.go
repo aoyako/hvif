@@ -2,7 +2,7 @@ package style
 
 import (
 	"encoding/binary"
-	"hvif/transform"
+	"hvif/utils"
 	"io"
 )
 
@@ -69,7 +69,7 @@ type GradientColor struct {
 }
 type Gradient struct {
 	Type          GradientType
-	Transformable *transform.Transformable
+	Transformable *utils.Transformable
 	Colors        []GradientColor
 }
 
@@ -161,8 +161,8 @@ func Read(r io.Reader) Style {
 		binary.Read(r, binary.LittleEndian, &ncolors)
 
 		g.Type = gradientType
-		if gradientFlags&GradientFlagTransform == 1 {
-			t := transform.ReadTransformable(r)
+		if gradientFlags&GradientFlagTransform != 0 {
+			t := utils.ReadTransformable(r)
 			g.Transformable = &t
 		}
 
@@ -171,8 +171,8 @@ func Read(r io.Reader) Style {
 			var offset uint8
 			binary.Read(r, binary.LittleEndian, &offset)
 
-			if gradientFlags&GradientFlagGrays == 1 {
-				if gradientFlags&GradientFlagNoAlpha == 1 {
+			if gradientFlags&GradientFlagGrays != 0 {
+				if gradientFlags&GradientFlagNoAlpha != 0 {
 					var gc SolidGrayNoAlpha
 					binary.Read(r, binary.LittleEndian, &gc)
 					color = gc.ToColor()
@@ -182,7 +182,7 @@ func Read(r io.Reader) Style {
 					color = gc.ToColor()
 				}
 			} else {
-				if gradientFlags&GradientFlagNoAlpha == 1 {
+				if gradientFlags&GradientFlagNoAlpha != 0 {
 					var gc SolidColorNoAlpha
 					binary.Read(r, binary.LittleEndian, &gc)
 					color = gc.ToColor()

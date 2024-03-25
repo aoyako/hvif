@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
+	"hvif/path"
 	"hvif/style"
 	"io"
 	"os"
@@ -10,7 +11,7 @@ import (
 )
 
 func main() {
-	filename := "res/folder.hvif"
+	filename := "res/ime"
 
 	file, err := os.Open(filename)
 	if err != nil {
@@ -34,12 +35,22 @@ func main() {
 
 	var i byte
 	for i = 0; i < count; i++ {
-		data := style.Read(file)
-		if c, ok := data.Color(); ok {
-			fmt.Println("color", c)
-		}
-		if g, ok := data.Gradient(); ok {
-			fmt.Println("gradient", g)
-		}
+		_ = style.Read(file)
+		// fmt.Println(i)
+		// data := style.Read(file)
+		// fmt.Printf("%+v\n\n\n\n", data)
+		// if c, ok := data.Color(); ok {
+		// 	fmt.Println("color", c)
+		// }
+		// if g, ok := data.Gradient(); ok {
+		// 	fmt.Println("gradient", g)
+		// }
+	}
+
+	binary.Read(file, binary.LittleEndian, &count)
+	fmt.Printf("Path count %d bytes: %d\n", unsafe.Sizeof(count), count)
+	for i = 0; i < count; i++ {
+		_ = path.Read(file)
+		// 	// break
 	}
 }
