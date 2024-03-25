@@ -11,10 +11,10 @@ func ReadFloatCoord(r io.Reader) float32 {
 	var x uint8
 	binary.Read(r, binary.LittleEndian, &x)
 	val = uint16(x)
-	if x&0x8 == 1 {
+	if val&0x80 != 0 {
 		var xlow uint8
 		binary.Read(r, binary.LittleEndian, &xlow)
-		x = x & (0x8 - 1)
+		val = val & (0x80 - 1)
 		val = (val << 8) | uint16(xlow)
 
 		return float32(val)/102.0 - 128.0

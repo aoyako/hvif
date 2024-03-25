@@ -87,7 +87,7 @@ func Read(r io.Reader) Path {
 	binary.Read(r, binary.LittleEndian, &flag)
 	path.isClosed = flag&PathFlagClosed != 0
 
-	if flag&PathFlagNoCurves == 1 {
+	if flag&PathFlagNoCurves != 0 {
 		fmt.Println("points")
 		var count uint8
 		binary.Read(r, binary.LittleEndian, &count)
@@ -104,7 +104,7 @@ func Read(r io.Reader) Path {
 		binary.Read(r, binary.LittleEndian, &count)
 
 		// Each command is 2 bits, aligned in a byte
-		bytesForCommandTypes := uint8(math.Ceil(pathCommandSizeBits*float64(count)/byteSizeBits) * byteSizeBits)
+		bytesForCommandTypes := uint8(math.Ceil(pathCommandSizeBits * float64(count) / byteSizeBits))
 		pathRawCommandTypes := make([]uint8, bytesForCommandTypes)
 		binary.Read(r, binary.LittleEndian, &pathRawCommandTypes)
 		pathCommandTypes := splitCommandTypes(pathRawCommandTypes, count)
@@ -143,8 +143,5 @@ func Read(r io.Reader) Path {
 		path.Elements = points
 	}
 
-	// for _, el := range path.Elements {
-	// fmt.Printf("%+v\n", path.Elements)
-	// }
 	return path
 }
