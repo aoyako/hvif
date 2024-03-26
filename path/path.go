@@ -88,7 +88,6 @@ func Read(r io.Reader) Path {
 	path.isClosed = flag&PathFlagClosed != 0
 
 	if flag&PathFlagNoCurves != 0 {
-		fmt.Println("points")
 		var count uint8
 		binary.Read(r, binary.LittleEndian, &count)
 
@@ -99,7 +98,6 @@ func Read(r io.Reader) Path {
 		path.Elements = points
 
 	} else if flag&PathFlagUsesCommands != 0 {
-		fmt.Println("commands")
 		var count uint8
 		binary.Read(r, binary.LittleEndian, &count)
 
@@ -130,7 +128,6 @@ func Read(r io.Reader) Path {
 		path.Elements = points
 
 	} else {
-		fmt.Println("curves")
 		var count uint8
 		err := binary.Read(r, binary.LittleEndian, &count)
 		if err != nil {

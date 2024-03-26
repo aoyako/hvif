@@ -51,6 +51,11 @@ func main() {
 	fmt.Printf("Path count %d bytes: %d\n", unsafe.Sizeof(count), count)
 	for i = 0; i < count; i++ {
 		_ = path.Read(file)
-		// 	// break
+	}
+
+	binary.Read(file, binary.LittleEndian, &count)
+	fmt.Printf("Shapes count %d bytes: %d\n", unsafe.Sizeof(count), count)
+	for i = 0; i < count; i++ {
+		// _ = path.Read(file)
 	}
 }
