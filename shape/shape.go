@@ -41,7 +41,7 @@ func Read(r io.Reader) {
 			utils.ReadTransformable(r)
 		}
 		if flags&ShapeFlagTranslation != 0 {
-			// utils.ReadTranslation(r)
+			utils.ReadTranslation(r)
 		}
 		if flags&ShapeFlagLodScale != 0 {
 			// utils.ReadLodScale(r)
