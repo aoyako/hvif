@@ -46,8 +46,27 @@ func ReadFloatTrans(r io.Reader) float32 {
 
 const MatrixSize = 6
 
+type TransformerType uint8
+
+const (
+	TransformerAffine TransformerType = 20 + iota
+	TransformerContour
+	TransformerPerspective
+	TransformerStroke
+)
+
 type Transformable struct {
 	Matrix [MatrixSize]float32
+}
+
+type Translation struct {
+	X float32
+	Y float32
+}
+
+type LodScale struct {
+	MinS float32
+	MaxS float32
 }
 
 func ReadTransformable(r io.Reader) Transformable {
@@ -56,4 +75,27 @@ func ReadTransformable(r io.Reader) Transformable {
 		t.Matrix[i] = ReadFloatTrans(r)
 	}
 	return t
+}
+
+func ReadTransformer(r io.Reader) Transformable {
+	var ttype TransformerType
+	binary.Read(r, binary.LittleEndian, &ttype)
+}
+
+func ReadTranslation(r io.Reader) Translation {
+	var t Translation
+	t.X = ReadFloatCoord(r)
+	t.Y = ReadFloatCoord(r)
+	return t
+}
+
+func ReadLodScale(r io.Reader) LodScale {
+	var ls LodScale
+	var scale uint8
+	binary.Read(r, binary.LittleEndian, &scale)
+	ls.MinS = float32(scale) / 63.75
+	binary.Read(r, binary.LittleEndian, &scale)
+	ls.MaxS = float32(scale) / 63.75
+
+	return ls
 }

@@ -44,9 +44,14 @@ func Read(r io.Reader) {
 			utils.ReadTranslation(r)
 		}
 		if flags&ShapeFlagLodScale != 0 {
-			// utils.ReadLodScale(r)
+			utils.ReadLodScale(r)
 		}
 		if flags&ShapeFlagHasTransformers != 0 {
+			var count uint8
+			binary.Read(r, binary.LittleEndian, &count)
+			for i := uint8(0); i < count; i++ {
+				utils.ReadTransformer(r)
+			}
 		}
 		if flags&ShapeFlagHinting != 0 {
 		}
