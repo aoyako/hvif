@@ -44,19 +44,20 @@ func ReadFloatTrans(r io.Reader) float32 {
 	return math.Float32frombits(bits)
 }
 
-const MatrixSize = 6
+const TransformMatrixSize = 6
+const PerspectiveMatrixSize = 9
 
 type TransformerType uint8
 
 const (
-	TransformerAffine TransformerType = 20 + iota
-	TransformerContour
-	TransformerPerspective
-	TransformerStroke
+	TransformerTypeAffine TransformerType = 20 + iota
+	TransformerTypeContour
+	TransformerTypePerspective
+	TransformerTypeStroke
 )
 
 type Transformable struct {
-	Matrix [MatrixSize]float32
+	Matrix [TransformMatrixSize]float32
 }
 
 type Translation struct {
@@ -69,17 +70,119 @@ type LodScale struct {
 	MaxS float32
 }
 
+func ReadMatrix(r io.Reader, size int) []float32 {
+	res := make([]float32, size)
+	for i := 0; i < size; i++ {
+		res[i] = ReadFloatTrans(r)
+	}
+	return res
+}
+
 func ReadTransformable(r io.Reader) Transformable {
 	var t Transformable
-	for i := 0; i < len(t.Matrix); i++ {
-		t.Matrix[i] = ReadFloatTrans(r)
-	}
+	copy(t.Matrix[:], ReadMatrix(r, TransformMatrixSize))
 	return t
 }
 
-func ReadTransformer(r io.Reader) Transformable {
+type TransformerAffine struct {
+	Matrix [TransformMatrixSize]float32
+}
+
+func ReadAffine(r io.Reader) TransformerAffine {
+	var t TransformerAffine
+	copy(t.Matrix[:], ReadMatrix(r, TransformMatrixSize))
+	return t
+}
+
+type LineJoinOptions uint8
+
+const (
+	MiterJoin LineJoinOptions = iota
+	MiterJoinRevert
+	RoundJoin
+	BevelJoin
+	MiterJoinRound
+)
+
+type TransformerContour struct {
+	Width      float64
+	LineJoin   LineJoinOptions
+	MiterLimit float64
+}
+
+func ReadCountour(r io.Reader) TransformerContour {
+	var t TransformerContour
+	var width uint8
+	var lineJoin uint8
+	var miterLimit uint8
+	binary.Read(r, binary.LittleEndian, &width)
+	binary.Read(r, binary.LittleEndian, &lineJoin)
+	binary.Read(r, binary.LittleEndian, &miterLimit)
+
+	t.Width = (float64(width) - 128.0)
+	t.LineJoin = LineJoinOptions(lineJoin)
+	t.MiterLimit = float64(miterLimit)
+	return t
+}
+
+type TransformerPerspective struct {
+	Matrix [PerspectiveMatrixSize]float32
+}
+
+func ReadTransformerPerspective(r io.Reader) TransformerPerspective {
+	var t TransformerPerspective
+	copy(t.Matrix[:], ReadMatrix(r, TransformMatrixSize))
+	return t
+}
+
+type LineCapOptions uint8
+
+const (
+	ButtCap LineCapOptions = iota
+	SquareCap
+	RoundCap
+)
+
+type TransformerStroke struct {
+	Width      float32
+	LineJoin   LineJoinOptions
+	LineCap    LineCapOptions
+	MiterLimit float32
+}
+
+func ReadTransformerStroke(r io.Reader) TransformerStroke {
+	var t TransformerStroke
+	var width uint8
+	var lineOptions uint8
+	var miterLimit uint8
+	binary.Read(r, binary.LittleEndian, &width)
+	binary.Read(r, binary.LittleEndian, &lineOptions)
+	binary.Read(r, binary.LittleEndian, &miterLimit)
+
+	t.Width = (float32(width) - 128.0)
+	t.LineJoin = LineJoinOptions(lineOptions & 15)
+	t.LineCap = LineCapOptions(lineOptions >> 4)
+	t.MiterLimit = float32(miterLimit)
+
+	return t
+}
+
+type Transformer any
+
+func ReadTransformer(r io.Reader) Transformer {
 	var ttype TransformerType
 	binary.Read(r, binary.LittleEndian, &ttype)
+	switch ttype {
+	case TransformerTypeAffine:
+		return ReadAffine(r)
+	case TransformerTypeContour:
+		return ReadCountour(r)
+	case TransformerTypePerspective:
+		return ReadTransformerPerspective(r)
+	case TransformerTypeStroke:
+		return ReadTransformerStroke(r)
+	}
+	return nil
 }
 
 func ReadTranslation(r io.Reader) Translation {
