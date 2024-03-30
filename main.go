@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"hvif/path"
+	"hvif/shape"
 	"hvif/style"
 	"io"
 	"os"
@@ -11,7 +12,7 @@ import (
 )
 
 func main() {
-	filename := "res/ime"
+	filename := "res/test.hvif"
 
 	file, err := os.Open(filename)
 	if err != nil {
@@ -56,6 +57,7 @@ func main() {
 	binary.Read(file, binary.LittleEndian, &count)
 	fmt.Printf("Shapes count %d bytes: %d\n", unsafe.Sizeof(count), count)
 	for i = 0; i < count; i++ {
-		// _ = path.Read(file)
+		s := shape.Read(file)
+		fmt.Printf("%+v\n\n", s)
 	}
 }
