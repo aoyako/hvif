@@ -7,13 +7,80 @@ import (
 )
 
 type Type uint8
+
+const (
+	StyleSolidColor Type = 1 + iota
+	StyleGradient
+	StyleSolidColorNoAlpha
+	StyleSolidGray
+	StyleSolidGrayNoAlpha
+)
+
 type GradientType uint8
+
+const (
+	GradientLinear GradientType = iota
+	GradientCircular
+	GradientDiamond
+	GradientConic
+	GradientXY
+	GradientSqrtXY
+)
+
 type GradientFlag uint8
+
+const (
+	GradientFlagTransform GradientFlag = 1 << (1 + iota)
+	GradientFlagNoAlpha
+	GradientFlag16BitColors // Unused
+	GradientFlagGrays
+)
+
 type Style struct {
 	isColor    bool
 	isGradient bool
 	color      Color
 	gradient   Gradient
+}
+
+type Color struct {
+	Red   uint8
+	Green uint8
+	Blue  uint8
+	Alpha uint8
+}
+
+type GradientColor struct {
+	StopOffset uint8
+	Color
+}
+
+type Gradient struct {
+	Type          GradientType
+	Transformable *utils.Transformable
+	Colors        []GradientColor
+}
+
+type SolidColor struct {
+	Red   uint8
+	Green uint8
+	Blue  uint8
+	Alpha uint8
+}
+
+type SolidColorNoAlpha struct {
+	Red   uint8
+	Green uint8
+	Blue  uint8
+}
+
+type SolidGray struct {
+	Gray  uint8
+	Alpha uint8
+}
+
+type SolidGrayNoAlpha struct {
+	Gray uint8
 }
 
 func (s Style) Gradient() (Gradient, bool) {
@@ -32,54 +99,6 @@ func styleFromColor(c Color) Style {
 	return Style{isColor: true, color: c}
 }
 
-const (
-	StyleSolidColor Type = 1 + iota
-	StyleGradient
-	StyleSolidColorNoAlpha
-	StyleSolidGray
-	StyleSolidGrayNoAlpha
-)
-
-const (
-	GradientLinear GradientType = iota
-	GradientCircular
-	GradientDiamond
-	GradientConic
-	GradientXY
-	GradientSqrtXY
-)
-
-const (
-	GradientFlagTransform GradientFlag = 1 << (1 + iota)
-	GradientFlagNoAlpha
-	GradientFlag16BitColors // Unused
-	GradientFlagGrays
-)
-
-type Color struct {
-	Red   uint8
-	Green uint8
-	Blue  uint8
-	Alpha uint8
-}
-
-type GradientColor struct {
-	StopOffset uint8
-	Color
-}
-type Gradient struct {
-	Type          GradientType
-	Transformable *utils.Transformable
-	Colors        []GradientColor
-}
-
-type SolidColor struct {
-	Red   uint8
-	Green uint8
-	Blue  uint8
-	Alpha uint8
-}
-
 func (sc SolidColor) ToColor() Color {
 	return Color{
 		Red:   sc.Red,
@@ -87,12 +106,6 @@ func (sc SolidColor) ToColor() Color {
 		Blue:  sc.Blue,
 		Alpha: sc.Alpha,
 	}
-}
-
-type SolidColorNoAlpha struct {
-	Red   uint8
-	Green uint8
-	Blue  uint8
 }
 
 func (scna SolidColorNoAlpha) ToColor() Color {
@@ -104,11 +117,6 @@ func (scna SolidColorNoAlpha) ToColor() Color {
 	}
 }
 
-type SolidGray struct {
-	Gray  uint8
-	Alpha uint8
-}
-
 func (sg SolidGray) ToColor() Color {
 	return Color{
 		Red:   sg.Gray,
@@ -116,10 +124,6 @@ func (sg SolidGray) ToColor() Color {
 		Blue:  sg.Gray,
 		Alpha: sg.Alpha,
 	}
-}
-
-type SolidGrayNoAlpha struct {
-	Gray uint8
 }
 
 func (sgna SolidGrayNoAlpha) ToColor() Color {
