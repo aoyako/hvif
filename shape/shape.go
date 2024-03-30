@@ -31,7 +31,7 @@ type Shape struct {
 	Transforms []utils.Transformer
 }
 
-func Read(r io.Reader) Shape {
+func Read(r io.Reader) (Shape, error) {
 	var s Shape
 	var stype ShapeType
 	binary.Read(r, binary.LittleEndian, &stype)
@@ -66,12 +66,16 @@ func Read(r io.Reader) Shape {
 			var count uint8
 			binary.Read(r, binary.LittleEndian, &count)
 			for i := uint8(0); i < count; i++ {
-				s.Transforms = append(s.Transforms, utils.ReadTransformer(r))
+				t, err := utils.ReadTransformer(r)
+				if err != nil {
+					return s, err
+				}
+				s.Transforms = append(s.Transforms, t)
 			}
 		}
 		if flags&ShapeFlagHinting != 0 {
 			s.Hinting = true
 		}
 	}
-	return s
+	return s, nil
 }

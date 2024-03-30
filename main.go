@@ -57,7 +57,7 @@ func main() {
 	binary.Read(file, binary.LittleEndian, &count)
 	fmt.Printf("Shapes count %d bytes: %d\n", unsafe.Sizeof(count), count)
 	for i = 0; i < count; i++ {
-		s := shape.Read(file)
-		fmt.Printf("%+v\n\n", s)
+		s, err := shape.Read(file)
+		fmt.Printf("%+v, %v\n\n", s, err)
 	}
 }

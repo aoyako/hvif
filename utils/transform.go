@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 )
 
@@ -84,19 +85,27 @@ func ReadAffine(r io.Reader) TransformerAffine {
 	return t
 }
 
-func ReadCountour(r io.Reader) TransformerContour {
+func ReadCountour(r io.Reader) (TransformerContour, error) {
 	var t TransformerContour
 	var width uint8
 	var lineJoin uint8
 	var miterLimit uint8
-	binary.Read(r, binary.LittleEndian, &width)
-	binary.Read(r, binary.LittleEndian, &lineJoin)
-	binary.Read(r, binary.LittleEndian, &miterLimit)
+
+	if err := binary.Read(r, binary.LittleEndian, &width); err != nil {
+		return t, fmt.Errorf("reading width: %w", err)
+	}
+	if err := binary.Read(r, binary.LittleEndian, &lineJoin); err != nil {
+		return t, fmt.Errorf("reading line join options: %w", err)
+	}
+	if err := binary.Read(r, binary.LittleEndian, &miterLimit); err != nil {
+		return t, fmt.Errorf("reading miter limit: %w", err)
+	}
 
 	t.Width = (float32(width) - 128.0)
 	t.LineJoin = LineJoinOptions(lineJoin)
 	t.MiterLimit = float32(miterLimit)
-	return t
+
+	return t, nil
 }
 
 func ReadTransformerPerspective(r io.Reader) TransformerPerspective {
@@ -122,20 +131,24 @@ func ReadTransformerStroke(r io.Reader) TransformerStroke {
 	return t
 }
 
-func ReadTransformer(r io.Reader) Transformer {
+func ReadTransformer(r io.Reader) (Transformer, error) {
 	var ttype TransformerType
 	binary.Read(r, binary.LittleEndian, &ttype)
 	switch ttype {
 	case TransformerTypeAffine:
-		return ReadAffine(r)
+		return ReadAffine(r), nil
 	case TransformerTypeContour:
-		return ReadCountour(r)
+		if t, err := ReadCountour(r); err != nil {
+			return nil, fmt.Errorf("reading countour: %w", err)
+		} else {
+			return t, nil
+		}
 	case TransformerTypePerspective:
-		return ReadTransformerPerspective(r)
+		return ReadTransformerPerspective(r), nil
 	case TransformerTypeStroke:
-		return ReadTransformerStroke(r)
+		return ReadTransformerStroke(r), nil
 	}
-	return nil
+	return nil, nil
 }
 
 func ReadTranslation(r io.Reader) Translation {

@@ -100,6 +100,7 @@ func styleFromColor(c Color) Style {
 }
 
 func (sc SolidColor) ToColor() Color {
+	// nolint
 	return Color{
 		Red:   sc.Red,
 		Green: sc.Green,
