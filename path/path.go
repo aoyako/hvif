@@ -8,25 +8,18 @@ import (
 	"math"
 )
 
-type Type uint8
-
-type Path struct {
-	isClosed bool
-
-	Elements []PathElement
-}
-
-type PathFlag uint8
-type PathCommandType uint8
-
 const pathCommandSizeBits = 2
 const byteSizeBits = 8
+
+type PathFlag uint8
 
 const (
 	PathFlagClosed PathFlag = 1 << (1 + iota)
 	PathFlagUsesCommands
 	PathFlagNoCurves
 )
+
+type PathCommandType uint8
 
 const (
 	PathCommandHLine PathCommandType = iota
@@ -35,7 +28,7 @@ const (
 	PathCommandCurve
 )
 
-type PathElement interface{}
+type PathElement any
 
 type HLine struct {
 	X float32
@@ -58,6 +51,11 @@ type Curve struct {
 	PointIn  Point
 	Point    Point
 	PointOut Point
+}
+
+type Path struct {
+	isClosed bool
+	Elements []PathElement
 }
 
 func readPoint(r io.Reader) Point {
