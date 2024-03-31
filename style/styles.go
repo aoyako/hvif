@@ -36,12 +36,7 @@ const (
 	GradientFlagGrays
 )
 
-type Style struct {
-	isColor    bool
-	isGradient bool
-	color      Color
-	gradient   Gradient
-}
+type Style any
 
 type Color struct {
 	Red   uint8
@@ -81,22 +76,6 @@ type SolidGray struct {
 
 type SolidGrayNoAlpha struct {
 	Gray uint8
-}
-
-func (s Style) Gradient() (Gradient, bool) {
-	return s.gradient, s.isGradient
-}
-
-func (s Style) Color() (Color, bool) {
-	return s.color, s.isColor
-}
-
-func styleFromGradient(g Gradient) Style {
-	return Style{isGradient: true, gradient: g}
-}
-
-func styleFromColor(c Color) Style {
-	return Style{isColor: true, color: c}
 }
 
 func (sc SolidColor) ToColor() Color {
@@ -143,19 +122,19 @@ func Read(r io.Reader) Style {
 	case StyleSolidColor:
 		var c SolidColor
 		binary.Read(r, binary.LittleEndian, &c)
-		return styleFromColor(c.ToColor())
+		return c.ToColor()
 	case StyleSolidColorNoAlpha:
 		var c SolidColorNoAlpha
 		binary.Read(r, binary.LittleEndian, &c)
-		return styleFromColor(c.ToColor())
+		return c.ToColor()
 	case StyleSolidGray:
 		var c SolidGray
 		binary.Read(r, binary.LittleEndian, &c)
-		return styleFromColor(c.ToColor())
+		return c.ToColor()
 	case StyleSolidGrayNoAlpha:
 		var c SolidGrayNoAlpha
 		binary.Read(r, binary.LittleEndian, &c)
-		return styleFromColor(c.ToColor())
+		return c.ToColor()
 	case StyleGradient:
 		var g Gradient
 		var gradientType GradientType
@@ -204,8 +183,8 @@ func Read(r io.Reader) Style {
 			})
 		}
 
-		return styleFromGradient(g)
+		return g
 	}
 
-	return Style{}
+	return nil
 }
