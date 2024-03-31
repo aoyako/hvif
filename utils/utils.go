@@ -2,14 +2,17 @@ package utils
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 	"math"
 )
 
-func ReadFloatCoord(r io.Reader) float32 {
+func ReadFloatCoord(r io.Reader) (float32, error) {
 	var val uint16
 	var x uint8
-	binary.Read(r, binary.LittleEndian, &x)
+	if err := binary.Read(r, binary.LittleEndian, &x); err != nil {
+		return 0, fmt.Errorf("read first part: %w", err)
+	}
 	val = uint16(x)
 	if val&0x80 != 0 {
 		var xlow uint8
@@ -17,10 +20,10 @@ func ReadFloatCoord(r io.Reader) float32 {
 		val = val & (0x80 - 1)
 		val = (val << 8) | uint16(xlow)
 
-		return float32(val)/102.0 - 128.0
+		return float32(val)/102.0 - 128.0, nil
 	}
 
-	return float32(val) - 32.0
+	return float32(val) - 32.0, nil
 }
 
 func ReadFloat24(r io.Reader) float32 {

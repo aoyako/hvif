@@ -2,6 +2,7 @@ package shape
 
 import (
 	"encoding/binary"
+	"fmt"
 	"hvif/utils"
 	"io"
 )
@@ -55,11 +56,17 @@ func Read(r io.Reader) (Shape, error) {
 			s.Transform = &t
 		}
 		if flags&ShapeFlagTranslation != 0 {
-			t := utils.ReadTranslation(r)
+			t, err := utils.ReadTranslation(r)
+			if err != nil {
+				return s, fmt.Errorf("read translation %w", err)
+			}
 			s.Translate = &t
 		}
 		if flags&ShapeFlagLodScale != 0 {
-			t := utils.ReadLodScale(r)
+			t, err := utils.ReadLodScale(r)
+			if err != nil {
+				return s, fmt.Errorf("read lod scale: %w", err)
+			}
 			s.LodScale = &t
 		}
 		if flags&ShapeFlagHasTransformers != 0 {

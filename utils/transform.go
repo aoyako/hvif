@@ -114,21 +114,27 @@ func ReadTransformerPerspective(r io.Reader) TransformerPerspective {
 	return t
 }
 
-func ReadTransformerStroke(r io.Reader) TransformerStroke {
+func ReadTransformerStroke(r io.Reader) (TransformerStroke, error) {
 	var t TransformerStroke
 	var width uint8
 	var lineOptions uint8
 	var miterLimit uint8
-	binary.Read(r, binary.LittleEndian, &width)
-	binary.Read(r, binary.LittleEndian, &lineOptions)
-	binary.Read(r, binary.LittleEndian, &miterLimit)
+	if err := binary.Read(r, binary.LittleEndian, &width); err != nil {
+		return t, fmt.Errorf("reading width: %w", err)
+	}
+	if err := binary.Read(r, binary.LittleEndian, &lineOptions); err != nil {
+		return t, fmt.Errorf("reading line options: %w", err)
+	}
+	if err := binary.Read(r, binary.LittleEndian, &miterLimit); err != nil {
+		return t, fmt.Errorf("reading miter limit: %w", err)
+	}
 
 	t.Width = (float32(width) - 128.0)
 	t.LineJoin = LineJoinOptions(lineOptions & 15)
 	t.LineCap = LineCapOptions(lineOptions >> 4)
 	t.MiterLimit = float32(miterLimit)
 
-	return t
+	return t, nil
 }
 
 func ReadTransformer(r io.Reader) (Transformer, error) {
@@ -146,25 +152,42 @@ func ReadTransformer(r io.Reader) (Transformer, error) {
 	case TransformerTypePerspective:
 		return ReadTransformerPerspective(r), nil
 	case TransformerTypeStroke:
-		return ReadTransformerStroke(r), nil
+		t, err := ReadTransformerStroke(r)
+		if err != nil {
+			return t, fmt.Errorf("read stroke transformer: %w", err)
+		}
+		return t, nil
 	}
 	return nil, nil
 }
 
-func ReadTranslation(r io.Reader) Translation {
+func ReadTranslation(r io.Reader) (Translation, error) {
 	var t Translation
-	t.X = ReadFloatCoord(r)
-	t.Y = ReadFloatCoord(r)
-	return t
+	x, err := ReadFloatCoord(r)
+	if err != nil {
+		return t, fmt.Errorf("read x coord: %w", err)
+	}
+	y, err := ReadFloatCoord(r)
+	if err != nil {
+		return t, fmt.Errorf("read y coord: %w", err)
+	}
+	t.X = x
+	t.Y = y
+	return t, nil
 }
 
-func ReadLodScale(r io.Reader) LodScale {
+func ReadLodScale(r io.Reader) (LodScale, error) {
 	var ls LodScale
-	var scale uint8
-	binary.Read(r, binary.LittleEndian, &scale)
-	ls.MinS = float32(scale) / 63.75
-	binary.Read(r, binary.LittleEndian, &scale)
-	ls.MaxS = float32(scale) / 63.75
+	var minScale uint8
+	var maxScale uint8
+	if err := binary.Read(r, binary.LittleEndian, &minScale); err != nil {
+		return ls, fmt.Errorf("reading min scale: %w", err)
+	}
+	if err := binary.Read(r, binary.LittleEndian, &maxScale); err != nil {
+		return ls, fmt.Errorf("reading max scale: %w", err)
+	}
+	ls.MinS = float32(minScale) / 63.75
+	ls.MaxS = float32(maxScale) / 63.75
 
-	return ls
+	return ls, nil
 }

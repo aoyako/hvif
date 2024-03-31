@@ -58,11 +58,19 @@ type Path struct {
 	Elements []PathElement
 }
 
-func readPoint(r io.Reader) Point {
+func readPoint(r io.Reader) (Point, error) {
 	var p Point
-	p.X = utils.ReadFloatCoord(r)
-	p.Y = utils.ReadFloatCoord(r)
-	return p
+	x, err := utils.ReadFloatCoord(r)
+	if err != nil {
+		return p, fmt.Errorf("read x coord: %w", err)
+	}
+	y, err := utils.ReadFloatCoord(r)
+	if err != nil {
+		return p, fmt.Errorf("read x coord: %w", err)
+	}
+	p.X = x
+	p.Y = y
+	return p, nil
 }
 
 func splitCommandTypes(rawTypes []uint8, count uint8) []PathCommandType {
@@ -79,7 +87,7 @@ func splitCommandTypes(rawTypes []uint8, count uint8) []PathCommandType {
 	return pct
 }
 
-func Read(r io.Reader) Path {
+func Read(r io.Reader) (Path, error) {
 	var path Path
 	var flag PathFlag
 	binary.Read(r, binary.LittleEndian, &flag)
@@ -91,7 +99,11 @@ func Read(r io.Reader) Path {
 
 		var points []PathElement
 		for i := byte(0); i < count; i++ {
-			points = append(points, readPoint(r))
+			p, err := readPoint(r)
+			if err != nil {
+				return path, fmt.Errorf("read point: %w", err)
+			}
+			points = append(points, p)
 		}
 		path.Elements = points
 
@@ -110,13 +122,37 @@ func Read(r io.Reader) Path {
 			var line interface{}
 			switch pathCommandTypes[i] {
 			case PathCommandHLine:
-				line = HLine{utils.ReadFloatCoord(r)}
+				c, err := utils.ReadFloatCoord(r)
+				if err != nil {
+					return path, fmt.Errorf("read hline coord: %w", err)
+				}
+				line = HLine{c}
 			case PathCommandVLine:
-				line = VLine{utils.ReadFloatCoord(r)}
+				c, err := utils.ReadFloatCoord(r)
+				if err != nil {
+					return path, fmt.Errorf("read vline coord: %w", err)
+				}
+				line = VLine{c}
 			case PathCommandLine:
-				line = Line{readPoint(r)}
+				p, err := readPoint(r)
+				if err != nil {
+					return path, fmt.Errorf("read point: %w", err)
+				}
+				line = Line{p}
 			case PathCommandCurve:
-				line = Curve{readPoint(r), readPoint(r), readPoint(r)}
+				p1, err := readPoint(r)
+				if err != nil {
+					return path, fmt.Errorf("read first point of curve: %w", err)
+				}
+				p2, err := readPoint(r)
+				if err != nil {
+					return path, fmt.Errorf("read second point of curve: %w", err)
+				}
+				p3, err := readPoint(r)
+				if err != nil {
+					return path, fmt.Errorf("read third point of curve: %w", err)
+				}
+				line = Curve{p1, p2, p3}
 			default:
 				fmt.Println(pathCommandTypes[i])
 			}
@@ -133,10 +169,22 @@ func Read(r io.Reader) Path {
 		}
 		var points []PathElement
 		for i := byte(0); i < count; i++ {
-			points = append(points, Curve{readPoint(r), readPoint(r), readPoint(r)})
+			p1, err := readPoint(r)
+			if err != nil {
+				return path, fmt.Errorf("read first point of curve: %w", err)
+			}
+			p2, err := readPoint(r)
+			if err != nil {
+				return path, fmt.Errorf("read second point of curve: %w", err)
+			}
+			p3, err := readPoint(r)
+			if err != nil {
+				return path, fmt.Errorf("read third point of curve: %w", err)
+			}
+			points = append(points, Curve{p1, p2, p3})
 		}
 		path.Elements = points
 	}
 
-	return path
+	return path, nil
 }
