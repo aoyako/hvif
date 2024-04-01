@@ -80,7 +80,7 @@ type SolidGrayNoAlpha struct {
 }
 
 func (sc SolidColor) ToColor() Color {
-	// nolint
+	//nolint
 	return Color{
 		Red:   sc.Red,
 		Green: sc.Green,
@@ -122,6 +122,7 @@ func Read(r io.Reader) (Style, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	switch styleType {
 	case StyleSolidColor:
 		var c SolidColor
@@ -170,6 +171,7 @@ func Read(r io.Reader) (Style, error) {
 		}
 
 		g.Type = gradientType
+
 		if gradientFlags&GradientFlagTransform != 0 {
 			t := utils.ReadTransformable(r)
 			g.Transformable = &t
