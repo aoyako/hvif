@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	filename := "res/test.hvif"
+	filename := "res/ime"
 
 	file, err := os.Open(filename)
 	if err != nil {
@@ -36,16 +36,7 @@ func main() {
 
 	var i byte
 	for i = 0; i < count; i++ {
-		_ = style.Read(file)
-		// fmt.Println(i)
-		// data := style.Read(file)
-		// fmt.Printf("%+v\n\n\n\n", data)
-		// if c, ok := data.Color(); ok {
-		// 	fmt.Println("color", c)
-		// }
-		// if g, ok := data.Gradient(); ok {
-		// 	fmt.Println("gradient", g)
-		// }
+		_, _ = style.Read(file)
 	}
 
 	binary.Read(file, binary.LittleEndian, &count)

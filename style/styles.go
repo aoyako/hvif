@@ -2,6 +2,7 @@ package style
 
 import (
 	"encoding/binary"
+	"fmt"
 	"hvif/utils"
 	"io"
 )
@@ -115,34 +116,58 @@ func (sgna SolidGrayNoAlpha) ToColor() Color {
 	}
 }
 
-func Read(r io.Reader) Style {
+func Read(r io.Reader) (Style, error) {
 	var styleType Type
-	binary.Read(r, binary.LittleEndian, &styleType)
+	err := binary.Read(r, binary.LittleEndian, &styleType)
+	if err != nil {
+		return nil, err
+	}
 	switch styleType {
 	case StyleSolidColor:
 		var c SolidColor
-		binary.Read(r, binary.LittleEndian, &c)
-		return c.ToColor()
+		err := binary.Read(r, binary.LittleEndian, &c)
+		if err != nil {
+			return nil, fmt.Errorf("reading solid color: %w", err)
+		}
+		return c.ToColor(), nil
 	case StyleSolidColorNoAlpha:
 		var c SolidColorNoAlpha
-		binary.Read(r, binary.LittleEndian, &c)
-		return c.ToColor()
+		err := binary.Read(r, binary.LittleEndian, &c)
+		if err != nil {
+			return nil, fmt.Errorf("reading solid color without alpha: %w", err)
+		}
+		return c.ToColor(), nil
 	case StyleSolidGray:
 		var c SolidGray
-		binary.Read(r, binary.LittleEndian, &c)
-		return c.ToColor()
+		err := binary.Read(r, binary.LittleEndian, &c)
+		if err != nil {
+			return nil, fmt.Errorf("reading solid gray color: %w", err)
+		}
+		return c.ToColor(), nil
 	case StyleSolidGrayNoAlpha:
 		var c SolidGrayNoAlpha
-		binary.Read(r, binary.LittleEndian, &c)
-		return c.ToColor()
+		err := binary.Read(r, binary.LittleEndian, &c)
+		if err != nil {
+			return nil, fmt.Errorf("reading solid gray color without alpha: %w", err)
+		}
+		return c.ToColor(), nil
 	case StyleGradient:
 		var g Gradient
 		var gradientType GradientType
 		var gradientFlags GradientFlag
 		var ncolors uint8
-		binary.Read(r, binary.LittleEndian, &gradientType)
-		binary.Read(r, binary.LittleEndian, &gradientFlags)
-		binary.Read(r, binary.LittleEndian, &ncolors)
+		err := binary.Read(r, binary.LittleEndian, &gradientType)
+		if err != nil {
+			return nil, fmt.Errorf("reading gradient type: %w", err)
+		}
+		err = binary.Read(r, binary.LittleEndian, &gradientFlags)
+		if err != nil {
+			return nil, fmt.Errorf("reading gradient flags: %w", err)
+		}
+		err = binary.Read(r, binary.LittleEndian, &ncolors)
+		if err != nil {
+			return nil, fmt.Errorf("reading gradient number of colors: %w", err)
+		}
 
 		g.Type = gradientType
 		if gradientFlags&GradientFlagTransform != 0 {
@@ -153,26 +178,41 @@ func Read(r io.Reader) Style {
 		for i := byte(0); i < ncolors; i++ {
 			var color Color
 			var offset uint8
-			binary.Read(r, binary.LittleEndian, &offset)
+			err := binary.Read(r, binary.LittleEndian, &offset)
+			if err != nil {
+				return nil, fmt.Errorf("reading gradient [%d] color offset: %w", i, err)
+			}
 
 			if gradientFlags&GradientFlagGrays != 0 {
 				if gradientFlags&GradientFlagNoAlpha != 0 {
 					var gc SolidGrayNoAlpha
-					binary.Read(r, binary.LittleEndian, &gc)
+					err := binary.Read(r, binary.LittleEndian, &gc)
+					if err != nil {
+						return nil, fmt.Errorf("reading gradient [%d] solid gray color without alpha: %w", i, err)
+					}
 					color = gc.ToColor()
 				} else {
 					var gc SolidGray
-					binary.Read(r, binary.LittleEndian, &gc)
+					err := binary.Read(r, binary.LittleEndian, &gc)
+					if err != nil {
+						return nil, fmt.Errorf("reading gradient [%d] solid gray color: %w", i, err)
+					}
 					color = gc.ToColor()
 				}
 			} else {
 				if gradientFlags&GradientFlagNoAlpha != 0 {
 					var gc SolidColorNoAlpha
-					binary.Read(r, binary.LittleEndian, &gc)
+					err := binary.Read(r, binary.LittleEndian, &gc)
+					if err != nil {
+						return nil, fmt.Errorf("reading gradient [%d] solid color without alpha: %w", i, err)
+					}
 					color = gc.ToColor()
 				} else {
 					var gc SolidColor
-					binary.Read(r, binary.LittleEndian, &gc)
+					err := binary.Read(r, binary.LittleEndian, &gc)
+					if err != nil {
+						return nil, fmt.Errorf("reading gradient [%d] solid color: %w", i, err)
+					}
 					color = gc.ToColor()
 				}
 			}
@@ -183,8 +223,8 @@ func Read(r io.Reader) Style {
 			})
 		}
 
-		return g
+		return g, nil
 	}
 
-	return nil
+	return nil, fmt.Errorf("unknown style: %d", styleType)
 }
