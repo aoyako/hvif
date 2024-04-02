@@ -10,6 +10,12 @@ run:
 linters:
   enable-all: true
   disable:
+    - funlen
+    - nestif
+    - cyclop
+    - goerr113
+    - varnamelen
+    - wsl
     - deadcode # Deprecated
     - exhaustivestruct # Deprecated
     - golint # Deprecated

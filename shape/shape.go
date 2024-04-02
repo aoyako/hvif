@@ -3,12 +3,15 @@ package shape
 import (
 	"encoding/binary"
 	"fmt"
-	"hvif/utils"
 	"io"
+
+	"hvif/utils"
 )
 
-type ShapeType uint8
-type ShapeFlag uint8
+type (
+	ShapeType uint8
+	ShapeFlag uint8
+)
 
 const (
 	ShapePathSource ShapeType = 0xa

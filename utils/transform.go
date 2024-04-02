@@ -6,8 +6,10 @@ import (
 	"io"
 )
 
-const TransformMatrixSize = 6
-const PerspectiveMatrixSize = 9
+const (
+	TransformMatrixSize   = 6
+	PerspectiveMatrixSize = 9
+)
 
 type LineJoinOptions uint8
 

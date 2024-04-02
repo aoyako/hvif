@@ -3,13 +3,16 @@ package path
 import (
 	"encoding/binary"
 	"fmt"
-	"hvif/utils"
 	"io"
 	"math"
+
+	"hvif/utils"
 )
 
-const pathCommandSizeBits = 2
-const byteSizeBits = 8
+const (
+	pathCommandSizeBits = 2
+	byteSizeBits        = 8
+)
 
 type PathFlag uint8
 
@@ -106,7 +109,6 @@ func Read(r io.Reader) (Path, error) {
 			points = append(points, p)
 		}
 		path.Elements = points
-
 	} else if flag&PathFlagUsesCommands != 0 {
 		var count uint8
 		binary.Read(r, binary.LittleEndian, &count)
@@ -160,7 +162,6 @@ func Read(r io.Reader) (Path, error) {
 		}
 
 		path.Elements = points
-
 	} else {
 		var count uint8
 		err := binary.Read(r, binary.LittleEndian, &count)

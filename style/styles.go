@@ -3,11 +3,14 @@ package style
 import (
 	"encoding/binary"
 	"fmt"
-	"hvif/utils"
 	"io"
+
+	"hvif/utils"
 )
 
 type Type uint8
+
+const ColorChannelMaxValue = 0xff
 
 const (
 	StyleSolidColor Type = 1 + iota
@@ -94,7 +97,7 @@ func (scna SolidColorNoAlpha) ToColor() Color {
 		Red:   scna.Red,
 		Green: scna.Green,
 		Blue:  scna.Blue,
-		Alpha: 0xff,
+		Alpha: ColorChannelMaxValue,
 	}
 }
 
@@ -112,120 +115,133 @@ func (sgna SolidGrayNoAlpha) ToColor() Color {
 		Red:   sgna.Gray,
 		Green: sgna.Gray,
 		Blue:  sgna.Gray,
-		Alpha: 0xff,
+		Alpha: ColorChannelMaxValue,
 	}
+}
+
+func readGradient(r io.Reader) (Gradient, error) {
+	var gradient Gradient
+	var gradientType GradientType
+	var gradientFlags GradientFlag
+	var ncolors uint8
+	err := binary.Read(r, binary.LittleEndian, &gradientType)
+	if err != nil {
+		return gradient, fmt.Errorf("reading type: %w", err)
+	}
+	err = binary.Read(r, binary.LittleEndian, &gradientFlags)
+	if err != nil {
+		return gradient, fmt.Errorf("reading flags: %w", err)
+	}
+	err = binary.Read(r, binary.LittleEndian, &ncolors)
+	if err != nil {
+		return gradient, fmt.Errorf("reading number of colors: %w", err)
+	}
+
+	gradient.Type = gradientType
+
+	if gradientFlags&GradientFlagTransform != 0 {
+		t := utils.ReadTransformable(r)
+		gradient.Transformable = &t
+	}
+
+	for colorID := byte(0); colorID < ncolors; colorID++ {
+		var color Color
+		var offset uint8
+		err := binary.Read(r, binary.LittleEndian, &offset)
+		if err != nil {
+			return gradient, fmt.Errorf("reading color [%d] offset: %w", colorID, err)
+		}
+
+		if gradientFlags&GradientFlagGrays != 0 {
+			if gradientFlags&GradientFlagNoAlpha != 0 {
+				var gc SolidGrayNoAlpha
+				err := binary.Read(r, binary.LittleEndian, &gc)
+				if err != nil {
+					return gradient, fmt.Errorf("reading color [%d] solid gray without alpha: %w", colorID, err)
+				}
+				color = gc.ToColor()
+			} else {
+				var gc SolidGray
+				err := binary.Read(r, binary.LittleEndian, &gc)
+				if err != nil {
+					return gradient, fmt.Errorf("reading color [%d] solid gray: %w", colorID, err)
+				}
+				color = gc.ToColor()
+			}
+		} else {
+			if gradientFlags&GradientFlagNoAlpha != 0 {
+				var gc SolidColorNoAlpha
+				err := binary.Read(r, binary.LittleEndian, &gc)
+				if err != nil {
+					return gradient, fmt.Errorf("reading color [%d] solid without alpha: %w", colorID, err)
+				}
+				color = gc.ToColor()
+			} else {
+				var gc SolidColor
+				err := binary.Read(r, binary.LittleEndian, &gc)
+				if err != nil {
+					return gradient, fmt.Errorf("reading color [%d] solid: %w", colorID, err)
+				}
+				color = gc.ToColor()
+			}
+		}
+
+		gradient.Colors = append(gradient.Colors, GradientColor{
+			StopOffset: offset,
+			Color:      color,
+		})
+	}
+
+	return gradient, nil
 }
 
 func Read(r io.Reader) (Style, error) {
 	var styleType Type
 	err := binary.Read(r, binary.LittleEndian, &styleType)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("reading style type: %w", err)
 	}
 
 	switch styleType {
 	case StyleSolidColor:
-		var c SolidColor
-		err := binary.Read(r, binary.LittleEndian, &c)
+		var s SolidColor
+		err := binary.Read(r, binary.LittleEndian, &s)
 		if err != nil {
 			return nil, fmt.Errorf("reading solid color: %w", err)
 		}
-		return c.ToColor(), nil
+
+		return s.ToColor(), nil
 	case StyleSolidColorNoAlpha:
-		var c SolidColorNoAlpha
-		err := binary.Read(r, binary.LittleEndian, &c)
+		var sna SolidColorNoAlpha
+		err := binary.Read(r, binary.LittleEndian, &sna)
 		if err != nil {
 			return nil, fmt.Errorf("reading solid color without alpha: %w", err)
 		}
-		return c.ToColor(), nil
+
+		return sna.ToColor(), nil
 	case StyleSolidGray:
-		var c SolidGray
-		err := binary.Read(r, binary.LittleEndian, &c)
+		var sg SolidGray
+		err := binary.Read(r, binary.LittleEndian, &sg)
 		if err != nil {
 			return nil, fmt.Errorf("reading solid gray color: %w", err)
 		}
-		return c.ToColor(), nil
+
+		return sg.ToColor(), nil
 	case StyleSolidGrayNoAlpha:
-		var c SolidGrayNoAlpha
-		err := binary.Read(r, binary.LittleEndian, &c)
+		var sgna SolidGrayNoAlpha
+		err := binary.Read(r, binary.LittleEndian, &sgna)
 		if err != nil {
 			return nil, fmt.Errorf("reading solid gray color without alpha: %w", err)
 		}
-		return c.ToColor(), nil
+
+		return sgna.ToColor(), nil
 	case StyleGradient:
-		var g Gradient
-		var gradientType GradientType
-		var gradientFlags GradientFlag
-		var ncolors uint8
-		err := binary.Read(r, binary.LittleEndian, &gradientType)
+		gradient, err := readGradient(r)
 		if err != nil {
-			return nil, fmt.Errorf("reading gradient type: %w", err)
-		}
-		err = binary.Read(r, binary.LittleEndian, &gradientFlags)
-		if err != nil {
-			return nil, fmt.Errorf("reading gradient flags: %w", err)
-		}
-		err = binary.Read(r, binary.LittleEndian, &ncolors)
-		if err != nil {
-			return nil, fmt.Errorf("reading gradient number of colors: %w", err)
+			return nil, fmt.Errorf("reading gradient: %w", err)
 		}
 
-		g.Type = gradientType
-
-		if gradientFlags&GradientFlagTransform != 0 {
-			t := utils.ReadTransformable(r)
-			g.Transformable = &t
-		}
-
-		for i := byte(0); i < ncolors; i++ {
-			var color Color
-			var offset uint8
-			err := binary.Read(r, binary.LittleEndian, &offset)
-			if err != nil {
-				return nil, fmt.Errorf("reading gradient [%d] color offset: %w", i, err)
-			}
-
-			if gradientFlags&GradientFlagGrays != 0 {
-				if gradientFlags&GradientFlagNoAlpha != 0 {
-					var gc SolidGrayNoAlpha
-					err := binary.Read(r, binary.LittleEndian, &gc)
-					if err != nil {
-						return nil, fmt.Errorf("reading gradient [%d] solid gray color without alpha: %w", i, err)
-					}
-					color = gc.ToColor()
-				} else {
-					var gc SolidGray
-					err := binary.Read(r, binary.LittleEndian, &gc)
-					if err != nil {
-						return nil, fmt.Errorf("reading gradient [%d] solid gray color: %w", i, err)
-					}
-					color = gc.ToColor()
-				}
-			} else {
-				if gradientFlags&GradientFlagNoAlpha != 0 {
-					var gc SolidColorNoAlpha
-					err := binary.Read(r, binary.LittleEndian, &gc)
-					if err != nil {
-						return nil, fmt.Errorf("reading gradient [%d] solid color without alpha: %w", i, err)
-					}
-					color = gc.ToColor()
-				} else {
-					var gc SolidColor
-					err := binary.Read(r, binary.LittleEndian, &gc)
-					if err != nil {
-						return nil, fmt.Errorf("reading gradient [%d] solid color: %w", i, err)
-					}
-					color = gc.ToColor()
-				}
-			}
-
-			g.Colors = append(g.Colors, GradientColor{
-				StopOffset: offset,
-				Color:      color,
-			})
-		}
-
-		return g, nil
+		return gradient, nil
 	}
 
 	return nil, fmt.Errorf("unknown style: %d", styleType)

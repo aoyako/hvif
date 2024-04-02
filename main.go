@@ -3,12 +3,13 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
-	"hvif/path"
-	"hvif/shape"
-	"hvif/style"
 	"io"
 	"os"
 	"unsafe"
+
+	"hvif/path"
+	"hvif/shape"
+	"hvif/style"
 )
 
 func main() {
