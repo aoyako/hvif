@@ -5,11 +5,15 @@ run:
   tests: false
   allow-parallel-runners: true
   allow-serial-runners: true
-  go: '1.22'
+  go: '1.20'
 
 linters:
   enable-all: true
   disable:
+    - revive # tmp
+    - depguard # tmp
+    - gomnd
+    - ireturn
     - funlen
     - nestif
     - cyclop

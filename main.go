@@ -9,7 +9,6 @@ import (
 
 	"hvif/path"
 	"hvif/shape"
-	"hvif/style"
 )
 
 func main() {
@@ -37,7 +36,7 @@ func main() {
 
 	var i byte
 	for i = 0; i < count; i++ {
-		_, _ = style.Read(file)
+		_, _ = readStyles(file)
 	}
 
 	binary.Read(file, binary.LittleEndian, &count)
