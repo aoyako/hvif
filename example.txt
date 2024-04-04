@@ -1,0 +1,78 @@
+Magic 4 bytes: ncif
+Color count 1 bytes: 13
+{Red:1 Green:1 Blue:1 Alpha:116}, <nil>
+
+{Red:1 Green:1 Blue:1 Alpha:255}, <nil>
+
+{Type:0 Transformable:0xc0000ca000 Colors:[{Red:246 Green:197 Blue:79 Alpha:255} {Red:168 Green:120 Blue:4 Alpha:255}] Offsets:[0 255]}, <nil>
+
+{Type:0 Transformable:0xc0000ca030 Colors:[{Red:255 Green:238 Blue:199 Alpha:255} {Red:246 Green:197 Blue:79 Alpha:255}] Offsets:[0 255]}, <nil>
+
+{Type:0 Transformable:0xc0000ca060 Colors:[{Red:168 Green:120 Blue:4 Alpha:255} {Red:202 Green:154 Blue:37 Alpha:255}] Offsets:[0 254]}, <nil>
+
+{Type:1 Transformable:0xc0000ca090 Colors:[{Red:235 Green:137 Blue:255 Alpha:255} {Red:195 Green:4 Blue:233 Alpha:255} {Red:151 Green:8 Blue:179 Alpha:255}] Offsets:[0 185 255]}, <nil>
+
+{Type:1 Transformable:0xc0000ca0c0 Colors:[{Red:189 Green:244 Blue:178 Alpha:255} {Red:37 Green:198 Blue:5 Alpha:255} {Red:20 Green:107 Blue:2 Alpha:255}] Offsets:[0 185 255]}, <nil>
+
+{Type:1 Transformable:0xc0000ca0f0 Colors:[{Red:137 Green:176 Blue:255 Alpha:255} {Red:4 Green:79 Blue:233 Alpha:255} {Red:8 Green:64 Blue:179 Alpha:255}] Offsets:[0 185 255]}, <nil>
+
+{Type:1 Transformable:0xc0000ca120 Colors:[{Red:255 Green:137 Blue:137 Alpha:255} {Red:233 Green:6 Blue:6 Alpha:255} {Red:179 Green:9 Blue:9 Alpha:255}] Offsets:[0 185 255]}, <nil>
+
+{Type:1 Transformable:0xc0000ca150 Colors:[{Red:237 Green:237 Blue:237 Alpha:255} {Red:53 Green:53 Blue:53 Alpha:255}] Offsets:[0 255]}, <nil>
+
+{Type:0 Transformable:0xc0000ca180 Colors:[{Red:255 Green:255 Blue:255 Alpha:255} {Red:124 Green:147 Blue:177 Alpha:255}] Offsets:[0 255]}, <nil>
+
+{Type:1 Transformable:0xc0000ca1b0 Colors:[{Red:221 Green:5 Blue:5 Alpha:255} {Red:255 Green:5 Blue:5 Alpha:0}] Offsets:[0 255]}, <nil>
+
+{Type:1 Transformable:0xc0000ca1e0 Colors:[{Red:255 Green:255 Blue:255 Alpha:255} {Red:160 Green:109 Blue:30 Alpha:255}] Offsets:[0 255]}, <nil>
+
+Path count 1 bytes: 10
+{isClosed:true Elements:[{PointIn:{X:18 Y:22} Point:{X:18 Y:22} PointOut:{X:18 Y:22}} {PointIn:{X:18 Y:56} Point:{X:18 Y:56} PointOut:{X:34 Y:56}} {PointIn:{X:38 Y:44} Point:{X:34 Y:48} PointOut:{X:38 Y:44}} {PointIn:{X:44 Y:46} Point:{X:40 Y:46} PointOut:{X:48 Y:46}} {PointIn:{X:55 Y:45} Point:{X:54 Y:46} PointOut:{X:56 Y:44}} {PointIn:{X:64 Y:42} Point:{X:64 Y:45} PointOut:{X:64 Y:40}} {PointIn:{X:61 Y:39} Point:{X:59.97058 Y:39.91176} PointOut:{X:61 Y:39}} {PointIn:{X:62 Y:34} Point:{X:62 Y:37} PointOut:{X:62 Y:28}} {PointIn:{X:50 Y:22} Point:{X:58 Y:26} PointOut:{X:50 Y:22}}]}, <nil>
+
+{isClosed:true Elements:[{PointIn:{X:2 Y:38} Point:{X:2 Y:24} PointOut:{X:2 Y:48}} {PointIn:{X:18 Y:52} Point:{X:12 Y:52} PointOut:{X:30 Y:52}} {PointIn:{X:33 Y:41} Point:{X:29 Y:45} PointOut:{X:37 Y:37}} {PointIn:{X:44 Y:42} Point:{X:39 Y:42} PointOut:{X:54 Y:42}} {PointIn:{X:58 Y:28} Point:{X:58 Y:36} PointOut:{X:58 Y:20}} {PointIn:{X:38 Y:14} Point:{X:48 Y:14} PointOut:{X:20 Y:14}}]}, <nil>
+
+{isClosed:true Elements:[{PointIn:{X:2 Y:40} Point:{X:2 Y:50} PointOut:{X:2 Y:40}} {PointIn:{X:2 Y:38} Point:{X:2 Y:38} PointOut:{X:2 Y:48}} {PointIn:{X:18 Y:52} Point:{X:12 Y:52} PointOut:{X:30 Y:52}} {PointIn:{X:33 Y:41} Point:{X:29 Y:45} PointOut:{X:37 Y:37}} {PointIn:{X:44 Y:42} Point:{X:39 Y:42} PointOut:{X:54 Y:42}} {PointIn:{X:58 Y:28} Point:{X:58 Y:36} PointOut:{X:58 Y:28}} {PointIn:{X:58 Y:31} Point:{X:58 Y:31} PointOut:{X:58 Y:38}} {PointIn:{X:44 Y:44} Point:{X:54 Y:44} PointOut:{X:39 Y:44}} {PointIn:{X:33 Y:43} Point:{X:37 Y:39} PointOut:{X:29 Y:47}} {PointIn:{X:18 Y:54} Point:{X:30 Y:54} PointOut:{X:12 Y:54}}]}, <nil>
+
+{isClosed:true Elements:[{PointIn:{X:2 Y:38} Point:{X:2 Y:24} PointOut:{X:2 Y:38}} {PointIn:{X:2 Y:40} Point:{X:2 Y:40} PointOut:{X:2 Y:50}} {PointIn:{X:18 Y:54} Point:{X:12 Y:54} PointOut:{X:30 Y:54}} {PointIn:{X:33 Y:43} Point:{X:29 Y:47} PointOut:{X:37 Y:39}} {PointIn:{X:44 Y:44} Point:{X:39 Y:44} PointOut:{X:54 Y:44}} {PointIn:{X:58 Y:30} Point:{X:58 Y:38} PointOut:{X:58 Y:30}} {PointIn:{X:58 Y:28} Point:{X:58 Y:28} PointOut:{X:58 Y:20}} {PointIn:{X:38 Y:14} Point:{X:48 Y:14} PointOut:{X:20 Y:14}}]}, <nil>
+
+{isClosed:true Elements:[{PointIn:{X:48 Y:34} Point:{X:54 Y:28} PointOut:{X:42 Y:40}} {PointIn:{X:35.980392 Y:29.823532} Point:{X:29.960785 Y:35.647064} PointOut:{X:42 Y:24}}]}, <nil>
+
+{isClosed:true Elements:[{PointIn:{X:35.980392 Y:31.823532} Point:{X:42 Y:26} PointOut:{X:29.960785 Y:37.647064}} {PointIn:{X:48 Y:36} Point:{X:42 Y:42} PointOut:{X:54 Y:30}}]}, <nil>
+
+{isClosed:true Elements:[{PointIn:{X:26 Y:43} Point:{X:26 Y:43} PointOut:{X:28 Y:43}} {PointIn:{X:32 Y:42} Point:{X:32 Y:42} PointOut:{X:32 Y:42}} {PointIn:{X:33 Y:41} Point:{X:33 Y:41} PointOut:{X:37 Y:40}} {PointIn:{X:44 Y:43} Point:{X:39 Y:43} PointOut:{X:49.058823 Y:43}} {PointIn:{X:55 Y:38} Point:{X:53 Y:41} PointOut:{X:55 Y:38}} {PointIn:{X:48 Y:37} Point:{X:52 Y:37} PointOut:{X:44 Y:37}} {PointIn:{X:36 Y:38} Point:{X:37.058823 Y:38} PointOut:{X:33.980392 Y:38}} {PointIn:{X:29 Y:36} Point:{X:31 Y:36} PointOut:{X:29 Y:36}}]}, <nil>
+
+{isClosed:true Elements:[{PointIn:{X:32 Y:16} Point:{X:34 Y:18} PointOut:{X:32 Y:16}} {Y:10} {X:36} {PointIn:{X:36 Y:16} Point:{X:36 Y:16} PointOut:{X:34 Y:18}} {PointIn:{X:36 Y:38} Point:{X:36 Y:30} PointOut:{X:36 Y:44}} {PointIn:{X:34 Y:48} Point:{X:35 Y:48} PointOut:{X:33 Y:48}} {PointIn:{X:32 Y:38} Point:{X:32 Y:44} PointOut:{X:32 Y:30}}]}, <nil>
+
+{isClosed:true Elements:[{X:32 Y:14} {X:36 Y:14} {X:36 Y:10} {X:32 Y:10}]}, <nil>
+
+{isClosed:true Elements:[{Point:{X:32 Y:10}} {PointIn:{X:36 Y:10} Point:{X:36 Y:10} PointOut:{X:37 Y:9}} {PointIn:{X:36 Y:5.0098114} Point:{X:37 Y:7} PointOut:{X:35.068634 Y:3.1568604}} {PointIn:{X:36 Y:0} Point:{X:37 Y:0} PointOut:{X:33 Y:0}} {PointIn:{X:31 Y:6} Point:{X:31 Y:3} PointOut:{X:31 Y:9}}]}, <nil>
+
+Shapes count 1 bytes: 14
+{Hinting:false StyleID:0 PathIDs:[0] Transform:<nil> Translate:<nil> LodScale:<nil> Transforms:[]}, <nil>
+
+{Hinting:false StyleID:1 PathIDs:[3 4 5] Transform:<nil> Translate:<nil> LodScale:<nil> Transforms:[{Width:4 LineJoin:0 LineCap:0 MiterLimit:4}]}, <nil>
+
+{Hinting:false StyleID:2 PathIDs:[4 2 5] Transform:<nil> Translate:<nil> LodScale:<nil> Transforms:[]}, <nil>
+
+{Hinting:false StyleID:3 PathIDs:[1 4] Transform:<nil> Translate:<nil> LodScale:<nil> Transforms:[]}, <nil>
+
+{Hinting:false StyleID:5 PathIDs:[4] Transform:0xc0000ca720 Translate:<nil> LodScale:<nil> Transforms:[]}, <nil>
+
+{Hinting:false StyleID:6 PathIDs:[4] Transform:0xc0000ca750 Translate:<nil> LodScale:<nil> Transforms:[]}, <nil>
+
+{Hinting:false StyleID:7 PathIDs:[4] Transform:<nil> Translate:0xc0000da340 LodScale:<nil> Transforms:[]}, <nil>
+
+{Hinting:false StyleID:4 PathIDs:[6] Transform:<nil> Translate:<nil> LodScale:<nil> Transforms:[]}, <nil>
+
+{Hinting:false StyleID:1 PathIDs:[7 9] Transform:0xc0000ca780 Translate:<nil> LodScale:<nil> Transforms:[{Width:4 LineJoin:0 LineCap:0 MiterLimit:4}]}, <nil>
+
+{Hinting:false StyleID:8 PathIDs:[4] Transform:<nil> Translate:0xc0000da4b8 LodScale:<nil> Transforms:[]}, <nil>
+
+{Hinting:false StyleID:9 PathIDs:[7] Transform:0xc0000ca7b0 Translate:<nil> LodScale:<nil> Transforms:[]}, <nil>
+
+{Hinting:false StyleID:10 PathIDs:[8] Transform:0xc0000ca7e0 Translate:<nil> LodScale:<nil> Transforms:[]}, <nil>
+
+{Hinting:false StyleID:12 PathIDs:[9] Transform:0xc0000ca810 Translate:<nil> LodScale:<nil> Transforms:[]}, <nil>
+
+{Hinting:false StyleID:11 PathIDs:[9] Transform:0xc0000ca840 Translate:<nil> LodScale:<nil> Transforms:[]}, <nil>
+

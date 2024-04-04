@@ -1,4 +1,4 @@
-package path
+package main
 
 import (
 	"encoding/binary"
@@ -90,7 +90,7 @@ func splitCommandTypes(rawTypes []uint8, count uint8) []PathCommandType {
 	return pct
 }
 
-func Read(r io.Reader) (Path, error) {
+func readPath(r io.Reader) (Path, error) {
 	var path Path
 	var flag PathFlag
 	err := binary.Read(r, binary.LittleEndian, &flag)

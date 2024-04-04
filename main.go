@@ -7,7 +7,6 @@ import (
 	"os"
 	"unsafe"
 
-	"hvif/path"
 	"hvif/shape"
 )
 
@@ -36,13 +35,15 @@ func main() {
 
 	var i byte
 	for i = 0; i < count; i++ {
-		_, _ = readStyles(file)
+		s, err := readStyle(file)
+		fmt.Printf("%+v, %v\n\n", s, err)
 	}
 
 	binary.Read(file, binary.LittleEndian, &count)
 	fmt.Printf("Path count %d bytes: %d\n", unsafe.Sizeof(count), count)
 	for i = 0; i < count; i++ {
-		_, _ = path.Read(file)
+		s, err := readPath(file)
+		fmt.Printf("%+v, %v\n\n", s, err)
 	}
 
 	binary.Read(file, binary.LittleEndian, &count)

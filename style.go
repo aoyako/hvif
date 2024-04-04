@@ -212,7 +212,7 @@ func readColor(r io.Reader, cType styleType) (Color, error) {
 	return Color{}, fmt.Errorf("color %d not recognized", cType)
 }
 
-func readStyles(r io.Reader) (Style, error) {
+func readStyle(r io.Reader) (Style, error) {
 	var styleType styleType
 	err := binary.Read(r, binary.LittleEndian, &styleType)
 	if err != nil {
