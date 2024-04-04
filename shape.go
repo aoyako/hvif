@@ -1,4 +1,4 @@
-package shape
+package main
 
 import (
 	"encoding/binary"
@@ -35,7 +35,7 @@ type Shape struct {
 	Transforms []utils.Transformer
 }
 
-func Read(r io.Reader) (Shape, error) {
+func readShape(r io.Reader) (Shape, error) {
 	var s Shape
 	var stype ShapeType
 	binary.Read(r, binary.LittleEndian, &stype)
