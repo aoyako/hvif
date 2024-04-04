@@ -45,7 +45,7 @@ Path count 1 bytes: 10
 
 {isClosed:true Elements:[{X:32 Y:14} {X:36 Y:14} {X:36 Y:10} {X:32 Y:10}]}, <nil>
 
-{isClosed:true Elements:[{Point:{X:32 Y:10}} {PointIn:{X:36 Y:10} Point:{X:36 Y:10} PointOut:{X:37 Y:9}} {PointIn:{X:36 Y:5.0098114} Point:{X:37 Y:7} PointOut:{X:35.068634 Y:3.1568604}} {PointIn:{X:36 Y:0} Point:{X:37 Y:0} PointOut:{X:33 Y:0}} {PointIn:{X:31 Y:6} Point:{X:31 Y:3} PointOut:{X:31 Y:9}}]}, <nil>
+{isClosed:true Elements:[{X:32 Y:10} {PointIn:{X:36 Y:10} Point:{X:36 Y:10} PointOut:{X:37 Y:9}} {PointIn:{X:36 Y:5.0098114} Point:{X:37 Y:7} PointOut:{X:35.068634 Y:3.1568604}} {PointIn:{X:36 Y:0} Point:{X:37 Y:0} PointOut:{X:33 Y:0}} {PointIn:{X:31 Y:6} Point:{X:31 Y:3} PointOut:{X:31 Y:9}}]}, <nil>
 
 Shapes count 1 bytes: 14
 {Hinting:false StyleID:0 PathIDs:[0] Transform:<nil> Translate:<nil> LodScale:<nil> Transforms:[]}, <nil>
@@ -60,13 +60,13 @@ Shapes count 1 bytes: 14
 
 {Hinting:false StyleID:6 PathIDs:[4] Transform:0xc0000ca750 Translate:<nil> LodScale:<nil> Transforms:[]}, <nil>
 
-{Hinting:false StyleID:7 PathIDs:[4] Transform:<nil> Translate:0xc0000da340 LodScale:<nil> Transforms:[]}, <nil>
+{Hinting:false StyleID:7 PathIDs:[4] Transform:<nil> Translate:0xc0000da338 LodScale:<nil> Transforms:[]}, <nil>
 
 {Hinting:false StyleID:4 PathIDs:[6] Transform:<nil> Translate:<nil> LodScale:<nil> Transforms:[]}, <nil>
 
 {Hinting:false StyleID:1 PathIDs:[7 9] Transform:0xc0000ca780 Translate:<nil> LodScale:<nil> Transforms:[{Width:4 LineJoin:0 LineCap:0 MiterLimit:4}]}, <nil>
 
-{Hinting:false StyleID:8 PathIDs:[4] Transform:<nil> Translate:0xc0000da4b8 LodScale:<nil> Transforms:[]}, <nil>
+{Hinting:false StyleID:8 PathIDs:[4] Transform:<nil> Translate:0xc0000da4a8 LodScale:<nil> Transforms:[]}, <nil>
 
 {Hinting:false StyleID:9 PathIDs:[7] Transform:0xc0000ca7b0 Translate:<nil> LodScale:<nil> Transforms:[]}, <nil>
 
