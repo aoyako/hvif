@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
-	"hvif/utils"
 	"io"
 )
 
@@ -75,7 +74,7 @@ type TransformerStroke struct {
 
 func readAffine(r io.Reader) (TransformerAffine, error) {
 	var t TransformerAffine
-	mx, err := utils.ReadMatrix(r, transformMatrixSize)
+	mx, err := ReadMatrix(r, transformMatrixSize)
 	if err != nil {
 		return t, fmt.Errorf("reading matrix: %w", err)
 	}
@@ -109,7 +108,7 @@ func readCountour(r io.Reader) (TransformerContour, error) {
 
 func readTransformerPerspective(r io.Reader) (TransformerPerspective, error) {
 	var t TransformerPerspective
-	mx, err := utils.ReadMatrix(r, perspectiveMatrixSize)
+	mx, err := ReadMatrix(r, perspectiveMatrixSize)
 	if err != nil {
 		return t, fmt.Errorf("reading matrix: %w", err)
 	}
@@ -180,11 +179,11 @@ func readTransformer(r io.Reader) (Transformer, error) {
 
 func readTranslation(r io.Reader) (TransformerTranslation, error) {
 	var t TransformerTranslation
-	x, err := utils.ReadFloatCoord(r)
+	x, err := ReadFloatCoord(r)
 	if err != nil {
 		return t, fmt.Errorf("read x coord: %w", err)
 	}
-	y, err := utils.ReadFloatCoord(r)
+	y, err := ReadFloatCoord(r)
 	if err != nil {
 		return t, fmt.Errorf("read y coord: %w", err)
 	}

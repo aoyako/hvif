@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
-	"hvif/utils"
 	"io"
 	"math"
 )
@@ -58,11 +57,11 @@ type Path struct {
 
 func readPoint(r io.Reader) (Point, error) {
 	var p Point
-	x, err := utils.ReadFloatCoord(r)
+	x, err := ReadFloatCoord(r)
 	if err != nil {
 		return p, fmt.Errorf("read x coord: %w", err)
 	}
-	y, err := utils.ReadFloatCoord(r)
+	y, err := ReadFloatCoord(r)
 	if err != nil {
 		return p, fmt.Errorf("read y coord: %w", err)
 	}
@@ -124,13 +123,13 @@ func readPath(r io.Reader) (Path, error) {
 			var line interface{}
 			switch pathCommandTypes[i] {
 			case pathCommandHLine:
-				c, err := utils.ReadFloatCoord(r)
+				c, err := ReadFloatCoord(r)
 				if err != nil {
 					return path, fmt.Errorf("reading hline coord: %w", err)
 				}
 				line = HLine{c}
 			case pathCommandVLine:
-				c, err := utils.ReadFloatCoord(r)
+				c, err := ReadFloatCoord(r)
 				if err != nil {
 					return path, fmt.Errorf("reading vline coord: %w", err)
 				}
