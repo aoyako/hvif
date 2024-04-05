@@ -1,8 +1,9 @@
-package utils
+package main
 
 import (
 	"encoding/binary"
 	"fmt"
+	"hvif/utils"
 	"io"
 )
 
@@ -77,13 +78,13 @@ type TransformerStroke struct {
 
 func ReadTransformable(r io.Reader) Transformable {
 	var t Transformable
-	copy(t.Matrix[:], ReadMatrix(r, TransformMatrixSize))
+	copy(t.Matrix[:], utils.ReadMatrix(r, TransformMatrixSize))
 	return t
 }
 
 func ReadAffine(r io.Reader) TransformerAffine {
 	var t TransformerAffine
-	copy(t.Matrix[:], ReadMatrix(r, TransformMatrixSize))
+	copy(t.Matrix[:], utils.ReadMatrix(r, TransformMatrixSize))
 	return t
 }
 
@@ -112,7 +113,7 @@ func ReadCountour(r io.Reader) (TransformerContour, error) {
 
 func ReadTransformerPerspective(r io.Reader) TransformerPerspective {
 	var t TransformerPerspective
-	copy(t.Matrix[:], ReadMatrix(r, TransformMatrixSize))
+	copy(t.Matrix[:], utils.ReadMatrix(r, TransformMatrixSize))
 	return t
 }
 
@@ -165,11 +166,11 @@ func ReadTransformer(r io.Reader) (Transformer, error) {
 
 func ReadTranslation(r io.Reader) (Translation, error) {
 	var t Translation
-	x, err := ReadFloatCoord(r)
+	x, err := utils.ReadFloatCoord(r)
 	if err != nil {
 		return t, fmt.Errorf("read x coord: %w", err)
 	}
-	y, err := ReadFloatCoord(r)
+	y, err := utils.ReadFloatCoord(r)
 	if err != nil {
 		return t, fmt.Errorf("read y coord: %w", err)
 	}

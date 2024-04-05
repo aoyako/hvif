@@ -4,8 +4,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
-
-	"hvif/utils"
 )
 
 type styleType uint8
@@ -49,7 +47,7 @@ type Color struct {
 
 type Gradient struct {
 	Type          GradientType
-	Transformable *utils.Transformable
+	Transformable *Transformable
 	Colors        []Color
 	Offsets       []uint8
 }
@@ -136,7 +134,7 @@ func readGradient(r io.Reader) (Gradient, error) {
 	}
 
 	if gradientFlags&gradientFlagTransform != 0 {
-		t := utils.ReadTransformable(r)
+		t := ReadTransformable(r)
 		gradient.Transformable = &t
 	}
 

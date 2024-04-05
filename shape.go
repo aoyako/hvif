@@ -4,8 +4,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
-
-	"hvif/utils"
 )
 
 type (
@@ -32,7 +30,7 @@ type Shape struct {
 	// Transform  *utils.Transformable
 	// Translate  *utils.Translation
 	// LodScale   *utils.LodScale
-	Transforms []utils.Transformer
+	Transforms []Transformer
 }
 
 func readShape(r io.Reader) (Shape, error) {
@@ -72,18 +70,18 @@ func readShape(r io.Reader) (Shape, error) {
 			return s, fmt.Errorf("reading flags: %w", err)
 		}
 		if flags&shapeFlagTransform != 0 {
-			t := utils.ReadTransformable(r)
+			t := ReadTransformable(r)
 			s.Transforms = append(s.Transforms, t)
 		}
 		if flags&shapeFlagTranslation != 0 {
-			t, err := utils.ReadTranslation(r)
+			t, err := ReadTranslation(r)
 			if err != nil {
 				return s, fmt.Errorf("read translation %w", err)
 			}
 			s.Transforms = append(s.Transforms, t)
 		}
 		if flags&shapeFlagLodScale != 0 {
-			t, err := utils.ReadLodScale(r)
+			t, err := ReadLodScale(r)
 			if err != nil {
 				return s, fmt.Errorf("read lod scale: %w", err)
 			}
@@ -96,7 +94,7 @@ func readShape(r io.Reader) (Shape, error) {
 				return s, fmt.Errorf("reading transformers count: %w", err)
 			}
 			for i := uint8(0); i < count; i++ {
-				t, err := utils.ReadTransformer(r)
+				t, err := ReadTransformer(r)
 				if err != nil {
 					return s, fmt.Errorf("reading transformer [%d]: %w", i, err)
 				}
