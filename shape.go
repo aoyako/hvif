@@ -70,7 +70,10 @@ func readShape(r io.Reader) (Shape, error) {
 			return s, fmt.Errorf("reading flags: %w", err)
 		}
 		if flags&shapeFlagTransform != 0 {
-			t := ReadAffine(r)
+			t, err := ReadAffine(r)
+			if err != nil {
+				return s, fmt.Errorf("reading affine transformer: %w", err)
+			}
 			s.Transforms = append(s.Transforms, t)
 		}
 		if flags&shapeFlagTranslation != 0 {

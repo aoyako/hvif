@@ -26,17 +26,28 @@ func ReadFloatCoord(r io.Reader) (float32, error) {
 	return float32(val) - 32.0, nil
 }
 
-func ReadFloat24(r io.Reader) float32 {
+func ReadFloat24(r io.Reader) (float32, error) {
 	var b1 uint8
+	err := binary.Read(r, binary.LittleEndian, &b1)
+	if err != nil {
+		return 0, fmt.Errorf("reading first byte: %w", err)
+	}
+
 	var b2 uint8
+	err = binary.Read(r, binary.LittleEndian, &b2)
+	if err != nil {
+		return 0, fmt.Errorf("reading second byte: %w", err)
+	}
+
 	var b3 uint8
-	binary.Read(r, binary.LittleEndian, &b1)
-	binary.Read(r, binary.LittleEndian, &b2)
-	binary.Read(r, binary.LittleEndian, &b3)
+	err = binary.Read(r, binary.LittleEndian, &b3)
+	if err != nil {
+		return 0, fmt.Errorf("reading third byte: %w", err)
+	}
 
 	value := uint32(uint32(b1)<<16 | uint32(b2)<<8 | uint32(b3))
 	if value == 0 {
-		return 0.0
+		return 0.0, nil
 	}
 
 	sign := ((value & 0b100000000000000000000000) >> 23)
@@ -44,13 +55,18 @@ func ReadFloat24(r io.Reader) float32 {
 	mant := ((value & 0b000000011111111111111111) >> 6)
 
 	bits := (sign << 31) | ((expo + 127) << 23) | mant
-	return math.Float32frombits(bits)
+	return math.Float32frombits(bits), nil
 }
 
-func ReadMatrix(r io.Reader, size int) []float32 {
+func ReadMatrix(r io.Reader, size int) ([]float32, error) {
 	res := make([]float32, size)
+	var err error
+
 	for i := 0; i < size; i++ {
-		res[i] = ReadFloat24(r)
+		res[i], err = ReadFloat24(r)
+		if err != nil {
+			return res, fmt.Errorf("reading float24: %w", err)
+		}
 	}
-	return res
+	return res, nil
 }
