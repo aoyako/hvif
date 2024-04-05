@@ -25,8 +25,8 @@ const (
 
 type Shape struct {
 	Hinting bool
-	StyleID uint8
-	PathIDs []uint8
+	styleID uint8
+	pathIDs []uint8
 	// Transform  *utils.Transformable
 	// Translate  *utils.Translation
 	// LodScale   *utils.LodScale
@@ -48,7 +48,7 @@ func readShape(r io.Reader) (*Shape, error) {
 		if err != nil {
 			return nil, fmt.Errorf("reading style id: %w", err)
 		}
-		s.StyleID = styleID
+		s.styleID = styleID
 
 		var pathCount uint8
 		err = binary.Read(r, binary.LittleEndian, &pathCount)
@@ -61,7 +61,7 @@ func readShape(r io.Reader) (*Shape, error) {
 			if err != nil {
 				return nil, fmt.Errorf("reading path [%d] id: %w", i, err)
 			}
-			s.PathIDs = append(s.PathIDs, pathID)
+			s.pathIDs = append(s.pathIDs, pathID)
 		}
 
 		var flags shapeFlag
