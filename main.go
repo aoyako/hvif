@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"unsafe"
 )
@@ -13,16 +14,14 @@ func main() {
 
 	file, err := os.Open(filename)
 	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return
+		log.Println("Error opening file:", err)
 	}
 	defer file.Close()
 
 	magic := make([]byte, 4)
 	nread, err := io.ReadFull(file, magic)
 	if err != nil {
-		fmt.Println("Error reading file:", err)
-		return
+		log.Println("Error reading file:", err)
 	}
 
 	fmt.Printf("Magic %d bytes: %s\n", nread, magic)

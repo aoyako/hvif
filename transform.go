@@ -38,7 +38,8 @@ const (
 	transformerTypeStroke
 )
 
-// TransformerTranslation | TransformerLodScale | TransformerAffine | TransformerPerspective | TransformerContour | TransformerStroke
+// TransformerTranslation | TransformerLodScale | TransformerAffine |
+// TransformerPerspective | TransformerContour | TransformerStroke.
 type Transformer any
 
 type TransformerTranslation struct {
@@ -79,6 +80,7 @@ func readAffine(r io.Reader) (TransformerAffine, error) {
 		return t, fmt.Errorf("reading matrix: %w", err)
 	}
 	copy(t.Matrix[:], mx)
+
 	return t, nil
 }
 
@@ -113,6 +115,7 @@ func readTransformerPerspective(r io.Reader) (TransformerPerspective, error) {
 		return t, fmt.Errorf("reading matrix: %w", err)
 	}
 	copy(t.Matrix[:], mx)
+
 	return t, nil
 }
 
@@ -154,6 +157,7 @@ func readTransformer(r io.Reader) (Transformer, error) {
 		if err != nil {
 			return nil, fmt.Errorf("reading affine transformer: %w", err)
 		}
+
 		return t, nil
 	case transformerTypeContour:
 		if t, err := readCountour(r); err != nil {
@@ -166,15 +170,18 @@ func readTransformer(r io.Reader) (Transformer, error) {
 		if err != nil {
 			return nil, fmt.Errorf("reading perspective transformer: %w", err)
 		}
+
 		return t, nil
 	case transformerTypeStroke:
 		t, err := readTransformerStroke(r)
 		if err != nil {
 			return t, fmt.Errorf("read stroke transformer: %w", err)
 		}
+
 		return t, nil
 	}
-	return nil, nil
+
+	return nil, fmt.Errorf("unknown transformer: %d", ttype)
 }
 
 func readTranslation(r io.Reader) (TransformerTranslation, error) {
@@ -189,6 +196,7 @@ func readTranslation(r io.Reader) (TransformerTranslation, error) {
 	}
 	t.X = x
 	t.Y = y
+
 	return t, nil
 }
 

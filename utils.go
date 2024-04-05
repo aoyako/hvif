@@ -17,7 +17,7 @@ func readFloatCoord(r io.Reader) (float32, error) {
 	if val&0x80 != 0 {
 		var xlow uint8
 		binary.Read(r, binary.LittleEndian, &xlow)
-		val = val & (0x80 - 1)
+		val &= (0x80 - 1)
 		val = (val << 8) | uint16(xlow)
 
 		return float32(val)/102.0 - 128.0, nil
@@ -45,7 +45,7 @@ func readFloat24(r io.Reader) (float32, error) {
 		return 0, fmt.Errorf("reading third byte: %w", err)
 	}
 
-	value := uint32(uint32(b1)<<16 | uint32(b2)<<8 | uint32(b3))
+	value := uint32(b1)<<16 | uint32(b2)<<8 | uint32(b3)
 	if value == 0 {
 		return 0.0, nil
 	}
@@ -55,6 +55,7 @@ func readFloat24(r io.Reader) (float32, error) {
 	mant := ((value & 0b000000011111111111111111) >> 6)
 
 	bits := (sign << 31) | ((expo + 127) << 23) | mant
+
 	return math.Float32frombits(bits), nil
 }
 
@@ -68,5 +69,6 @@ func readMatrix(r io.Reader, size int) ([]float32, error) {
 			return res, fmt.Errorf("reading float24: %w", err)
 		}
 	}
+
 	return res, nil
 }

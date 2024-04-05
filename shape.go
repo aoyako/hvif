@@ -108,5 +108,6 @@ func readShape(r io.Reader) (Shape, error) {
 			s.Hinting = true
 		}
 	}
+
 	return s, nil
 }

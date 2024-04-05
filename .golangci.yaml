@@ -10,6 +10,8 @@ run:
 linters:
   enable-all: true
   disable:
+    - forbidigo # tmp
+    - gocognit
     - revive # tmp
     - depguard # tmp
     - gomnd

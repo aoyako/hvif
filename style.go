@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"io"
 )
@@ -208,6 +209,8 @@ func readColor(r io.Reader, cType styleType) (Color, error) {
 		}
 
 		return sgna.toColor(), nil
+	case styleGradient:
+		return Color{}, errors.New("gradient is not a color")
 	}
 
 	return Color{}, fmt.Errorf("color %d not recognized", cType)
