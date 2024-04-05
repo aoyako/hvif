@@ -47,7 +47,7 @@ type Color struct {
 
 type Gradient struct {
 	Type          GradientType
-	Transformable *Transformable
+	Transformable *TransformerAffine
 	Colors        []Color
 	Offsets       []uint8
 }
@@ -134,7 +134,7 @@ func readGradient(r io.Reader) (Gradient, error) {
 	}
 
 	if gradientFlags&gradientFlagTransform != 0 {
-		t := ReadTransformable(r)
+		t := ReadAffine(r)
 		gradient.Transformable = &t
 	}
 

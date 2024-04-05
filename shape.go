@@ -70,7 +70,7 @@ func readShape(r io.Reader) (Shape, error) {
 			return s, fmt.Errorf("reading flags: %w", err)
 		}
 		if flags&shapeFlagTransform != 0 {
-			t := ReadTransformable(r)
+			t := ReadAffine(r)
 			s.Transforms = append(s.Transforms, t)
 		}
 		if flags&shapeFlagTranslation != 0 {

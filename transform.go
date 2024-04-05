@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	TransformMatrixSize   = 6
-	PerspectiveMatrixSize = 9
+	transformMatrixSize   = 6
+	perspectiveMatrixSize = 9
 )
 
 type LineJoinOptions uint8
@@ -30,37 +30,34 @@ const (
 	RoundCap
 )
 
-type TransformerType uint8
+type transformerType uint8
 
 const (
-	TransformerTypeAffine TransformerType = 20 + iota
-	TransformerTypeContour
-	TransformerTypePerspective
-	TransformerTypeStroke
+	transformerTypeAffine transformerType = 20 + iota
+	transformerTypeContour
+	transformerTypePerspective
+	transformerTypeStroke
 )
 
-type Transformable struct {
-	Matrix [TransformMatrixSize]float32
-}
+// TransformerTranslation | TransformerLodScale | TransformerAffine | TransformerPerspective | TransformerContour | TransformerStroke
+type Transformer any
 
-type Translation struct {
+type TransformerTranslation struct {
 	X float32
 	Y float32
 }
 
-type LodScale struct {
+type TransformerLodScale struct {
 	MinS float32
 	MaxS float32
 }
 
-type Transformer any
-
 type TransformerAffine struct {
-	Matrix [TransformMatrixSize]float32
+	Matrix [transformMatrixSize]float32
 }
 
 type TransformerPerspective struct {
-	Matrix [PerspectiveMatrixSize]float32
+	Matrix [perspectiveMatrixSize]float32
 }
 
 type TransformerContour struct {
@@ -76,15 +73,9 @@ type TransformerStroke struct {
 	MiterLimit float32
 }
 
-func ReadTransformable(r io.Reader) Transformable {
-	var t Transformable
-	copy(t.Matrix[:], utils.ReadMatrix(r, TransformMatrixSize))
-	return t
-}
-
 func ReadAffine(r io.Reader) TransformerAffine {
 	var t TransformerAffine
-	copy(t.Matrix[:], utils.ReadMatrix(r, TransformMatrixSize))
+	copy(t.Matrix[:], utils.ReadMatrix(r, transformMatrixSize))
 	return t
 }
 
@@ -113,7 +104,7 @@ func ReadCountour(r io.Reader) (TransformerContour, error) {
 
 func ReadTransformerPerspective(r io.Reader) TransformerPerspective {
 	var t TransformerPerspective
-	copy(t.Matrix[:], utils.ReadMatrix(r, TransformMatrixSize))
+	copy(t.Matrix[:], utils.ReadMatrix(r, perspectiveMatrixSize))
 	return t
 }
 
@@ -141,20 +132,20 @@ func ReadTransformerStroke(r io.Reader) (TransformerStroke, error) {
 }
 
 func ReadTransformer(r io.Reader) (Transformer, error) {
-	var ttype TransformerType
+	var ttype transformerType
 	binary.Read(r, binary.LittleEndian, &ttype)
 	switch ttype {
-	case TransformerTypeAffine:
+	case transformerTypeAffine:
 		return ReadAffine(r), nil
-	case TransformerTypeContour:
+	case transformerTypeContour:
 		if t, err := ReadCountour(r); err != nil {
 			return nil, fmt.Errorf("reading countour: %w", err)
 		} else {
 			return t, nil
 		}
-	case TransformerTypePerspective:
+	case transformerTypePerspective:
 		return ReadTransformerPerspective(r), nil
-	case TransformerTypeStroke:
+	case transformerTypeStroke:
 		t, err := ReadTransformerStroke(r)
 		if err != nil {
 			return t, fmt.Errorf("read stroke transformer: %w", err)
@@ -164,8 +155,8 @@ func ReadTransformer(r io.Reader) (Transformer, error) {
 	return nil, nil
 }
 
-func ReadTranslation(r io.Reader) (Translation, error) {
-	var t Translation
+func ReadTranslation(r io.Reader) (TransformerTranslation, error) {
+	var t TransformerTranslation
 	x, err := utils.ReadFloatCoord(r)
 	if err != nil {
 		return t, fmt.Errorf("read x coord: %w", err)
@@ -179,8 +170,8 @@ func ReadTranslation(r io.Reader) (Translation, error) {
 	return t, nil
 }
 
-func ReadLodScale(r io.Reader) (LodScale, error) {
-	var ls LodScale
+func ReadLodScale(r io.Reader) (TransformerLodScale, error) {
+	var ls TransformerLodScale
 	var minScale uint8
 	var maxScale uint8
 	if err := binary.Read(r, binary.LittleEndian, &minScale); err != nil {

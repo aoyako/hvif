@@ -4,27 +4,27 @@ Color count 1 bytes: 13
 
 {Red:1 Green:1 Blue:1 Alpha:255}, <nil>
 
-{Type:0 Transformable:0xc0000ca000 Colors:[{Red:246 Green:197 Blue:79 Alpha:255} {Red:168 Green:120 Blue:4 Alpha:255}] Offsets:[0 255]}, <nil>
+{Type:0 Transformable:0xc00012c000 Colors:[{Red:246 Green:197 Blue:79 Alpha:255} {Red:168 Green:120 Blue:4 Alpha:255}] Offsets:[0 255]}, <nil>
 
-{Type:0 Transformable:0xc0000ca030 Colors:[{Red:255 Green:238 Blue:199 Alpha:255} {Red:246 Green:197 Blue:79 Alpha:255}] Offsets:[0 255]}, <nil>
+{Type:0 Transformable:0xc00012c030 Colors:[{Red:255 Green:238 Blue:199 Alpha:255} {Red:246 Green:197 Blue:79 Alpha:255}] Offsets:[0 255]}, <nil>
 
-{Type:0 Transformable:0xc0000ca060 Colors:[{Red:168 Green:120 Blue:4 Alpha:255} {Red:202 Green:154 Blue:37 Alpha:255}] Offsets:[0 254]}, <nil>
+{Type:0 Transformable:0xc00012c060 Colors:[{Red:168 Green:120 Blue:4 Alpha:255} {Red:202 Green:154 Blue:37 Alpha:255}] Offsets:[0 254]}, <nil>
 
-{Type:1 Transformable:0xc0000ca090 Colors:[{Red:235 Green:137 Blue:255 Alpha:255} {Red:195 Green:4 Blue:233 Alpha:255} {Red:151 Green:8 Blue:179 Alpha:255}] Offsets:[0 185 255]}, <nil>
+{Type:1 Transformable:0xc00012c090 Colors:[{Red:235 Green:137 Blue:255 Alpha:255} {Red:195 Green:4 Blue:233 Alpha:255} {Red:151 Green:8 Blue:179 Alpha:255}] Offsets:[0 185 255]}, <nil>
 
-{Type:1 Transformable:0xc0000ca0c0 Colors:[{Red:189 Green:244 Blue:178 Alpha:255} {Red:37 Green:198 Blue:5 Alpha:255} {Red:20 Green:107 Blue:2 Alpha:255}] Offsets:[0 185 255]}, <nil>
+{Type:1 Transformable:0xc00012c0c0 Colors:[{Red:189 Green:244 Blue:178 Alpha:255} {Red:37 Green:198 Blue:5 Alpha:255} {Red:20 Green:107 Blue:2 Alpha:255}] Offsets:[0 185 255]}, <nil>
 
-{Type:1 Transformable:0xc0000ca0f0 Colors:[{Red:137 Green:176 Blue:255 Alpha:255} {Red:4 Green:79 Blue:233 Alpha:255} {Red:8 Green:64 Blue:179 Alpha:255}] Offsets:[0 185 255]}, <nil>
+{Type:1 Transformable:0xc00012c0f0 Colors:[{Red:137 Green:176 Blue:255 Alpha:255} {Red:4 Green:79 Blue:233 Alpha:255} {Red:8 Green:64 Blue:179 Alpha:255}] Offsets:[0 185 255]}, <nil>
 
-{Type:1 Transformable:0xc0000ca120 Colors:[{Red:255 Green:137 Blue:137 Alpha:255} {Red:233 Green:6 Blue:6 Alpha:255} {Red:179 Green:9 Blue:9 Alpha:255}] Offsets:[0 185 255]}, <nil>
+{Type:1 Transformable:0xc00012c120 Colors:[{Red:255 Green:137 Blue:137 Alpha:255} {Red:233 Green:6 Blue:6 Alpha:255} {Red:179 Green:9 Blue:9 Alpha:255}] Offsets:[0 185 255]}, <nil>
 
-{Type:1 Transformable:0xc0000ca150 Colors:[{Red:237 Green:237 Blue:237 Alpha:255} {Red:53 Green:53 Blue:53 Alpha:255}] Offsets:[0 255]}, <nil>
+{Type:1 Transformable:0xc00012c150 Colors:[{Red:237 Green:237 Blue:237 Alpha:255} {Red:53 Green:53 Blue:53 Alpha:255}] Offsets:[0 255]}, <nil>
 
-{Type:0 Transformable:0xc0000ca180 Colors:[{Red:255 Green:255 Blue:255 Alpha:255} {Red:124 Green:147 Blue:177 Alpha:255}] Offsets:[0 255]}, <nil>
+{Type:0 Transformable:0xc00012c180 Colors:[{Red:255 Green:255 Blue:255 Alpha:255} {Red:124 Green:147 Blue:177 Alpha:255}] Offsets:[0 255]}, <nil>
 
-{Type:1 Transformable:0xc0000ca1b0 Colors:[{Red:221 Green:5 Blue:5 Alpha:255} {Red:255 Green:5 Blue:5 Alpha:0}] Offsets:[0 255]}, <nil>
+{Type:1 Transformable:0xc00012c1b0 Colors:[{Red:221 Green:5 Blue:5 Alpha:255} {Red:255 Green:5 Blue:5 Alpha:0}] Offsets:[0 255]}, <nil>
 
-{Type:1 Transformable:0xc0000ca1e0 Colors:[{Red:255 Green:255 Blue:255 Alpha:255} {Red:160 Green:109 Blue:30 Alpha:255}] Offsets:[0 255]}, <nil>
+{Type:1 Transformable:0xc00012c1e0 Colors:[{Red:255 Green:255 Blue:255 Alpha:255} {Red:160 Green:109 Blue:30 Alpha:255}] Offsets:[0 255]}, <nil>
 
 Path count 1 bytes: 10
 {isClosed:true Elements:[{PointIn:{X:18 Y:22} Point:{X:18 Y:22} PointOut:{X:18 Y:22}} {PointIn:{X:18 Y:56} Point:{X:18 Y:56} PointOut:{X:34 Y:56}} {PointIn:{X:38 Y:44} Point:{X:34 Y:48} PointOut:{X:38 Y:44}} {PointIn:{X:44 Y:46} Point:{X:40 Y:46} PointOut:{X:48 Y:46}} {PointIn:{X:55 Y:45} Point:{X:54 Y:46} PointOut:{X:56 Y:44}} {PointIn:{X:64 Y:42} Point:{X:64 Y:45} PointOut:{X:64 Y:40}} {PointIn:{X:61 Y:39} Point:{X:59.97058 Y:39.91176} PointOut:{X:61 Y:39}} {PointIn:{X:62 Y:34} Point:{X:62 Y:37} PointOut:{X:62 Y:28}} {PointIn:{X:50 Y:22} Point:{X:58 Y:26} PointOut:{X:50 Y:22}}]}, <nil>
