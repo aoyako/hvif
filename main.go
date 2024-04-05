@@ -31,9 +31,11 @@ func main() {
 	fmt.Printf("Color count %d bytes: %d\n", unsafe.Sizeof(count), count)
 
 	var i byte
-	for i = 0; i < count; i++ {
+	for i = 0; i < 1; i++ {
 		s, err := readStyle(file)
 		fmt.Printf("%+v, %v\n\n", s, err)
+		fmt.Println(&Color{Red: 1, Green: 1, Blue: 1, Alpha: 116} == s)
+		// fmt.Printf("%T, %p, %v \n\n", s, &s, err)
 	}
 
 	binary.Read(file, binary.LittleEndian, &count)

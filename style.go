@@ -230,14 +230,14 @@ func readStyle(r io.Reader) (Style, error) {
 			return nil, fmt.Errorf("reading color: %w", err)
 		}
 
-		return c, nil
+		return &c, nil
 	case styleGradient:
 		gradient, err := readGradient(r)
 		if err != nil {
 			return nil, fmt.Errorf("reading gradient: %w", err)
 		}
 
-		return gradient, nil
+		return &gradient, nil
 	}
 
 	return nil, fmt.Errorf("unknown style: %d", styleType)
