@@ -134,7 +134,7 @@ func readGradient(r io.Reader) (Gradient, error) {
 	}
 
 	if gradientFlags&gradientFlagTransform != 0 {
-		t, err := ReadAffine(r)
+		t, err := readAffine(r)
 		if err != nil {
 			return gradient, fmt.Errorf("reading affine transformer: %w", err)
 		}

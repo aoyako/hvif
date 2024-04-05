@@ -73,7 +73,7 @@ type TransformerStroke struct {
 	MiterLimit float32
 }
 
-func ReadAffine(r io.Reader) (TransformerAffine, error) {
+func readAffine(r io.Reader) (TransformerAffine, error) {
 	var t TransformerAffine
 	mx, err := utils.ReadMatrix(r, transformMatrixSize)
 	if err != nil {
@@ -83,7 +83,7 @@ func ReadAffine(r io.Reader) (TransformerAffine, error) {
 	return t, nil
 }
 
-func ReadCountour(r io.Reader) (TransformerContour, error) {
+func readCountour(r io.Reader) (TransformerContour, error) {
 	var t TransformerContour
 
 	var width uint8
@@ -107,7 +107,7 @@ func ReadCountour(r io.Reader) (TransformerContour, error) {
 	return t, nil
 }
 
-func ReadTransformerPerspective(r io.Reader) (TransformerPerspective, error) {
+func readTransformerPerspective(r io.Reader) (TransformerPerspective, error) {
 	var t TransformerPerspective
 	mx, err := utils.ReadMatrix(r, perspectiveMatrixSize)
 	if err != nil {
@@ -117,7 +117,7 @@ func ReadTransformerPerspective(r io.Reader) (TransformerPerspective, error) {
 	return t, nil
 }
 
-func ReadTransformerStroke(r io.Reader) (TransformerStroke, error) {
+func readTransformerStroke(r io.Reader) (TransformerStroke, error) {
 	var t TransformerStroke
 
 	var width uint8
@@ -142,7 +142,7 @@ func ReadTransformerStroke(r io.Reader) (TransformerStroke, error) {
 	return t, nil
 }
 
-func ReadTransformer(r io.Reader) (Transformer, error) {
+func readTransformer(r io.Reader) (Transformer, error) {
 	var ttype transformerType
 	err := binary.Read(r, binary.LittleEndian, &ttype)
 	if err != nil {
@@ -151,25 +151,25 @@ func ReadTransformer(r io.Reader) (Transformer, error) {
 
 	switch ttype {
 	case transformerTypeAffine:
-		t, err := ReadAffine(r)
+		t, err := readAffine(r)
 		if err != nil {
 			return nil, fmt.Errorf("reading affine transformer: %w", err)
 		}
 		return t, nil
 	case transformerTypeContour:
-		if t, err := ReadCountour(r); err != nil {
+		if t, err := readCountour(r); err != nil {
 			return nil, fmt.Errorf("reading countour: %w", err)
 		} else {
 			return t, nil
 		}
 	case transformerTypePerspective:
-		t, err := ReadTransformerPerspective(r)
+		t, err := readTransformerPerspective(r)
 		if err != nil {
 			return nil, fmt.Errorf("reading perspective transformer: %w", err)
 		}
 		return t, nil
 	case transformerTypeStroke:
-		t, err := ReadTransformerStroke(r)
+		t, err := readTransformerStroke(r)
 		if err != nil {
 			return t, fmt.Errorf("read stroke transformer: %w", err)
 		}
@@ -178,7 +178,7 @@ func ReadTransformer(r io.Reader) (Transformer, error) {
 	return nil, nil
 }
 
-func ReadTranslation(r io.Reader) (TransformerTranslation, error) {
+func readTranslation(r io.Reader) (TransformerTranslation, error) {
 	var t TransformerTranslation
 	x, err := utils.ReadFloatCoord(r)
 	if err != nil {
@@ -193,7 +193,7 @@ func ReadTranslation(r io.Reader) (TransformerTranslation, error) {
 	return t, nil
 }
 
-func ReadLodScale(r io.Reader) (TransformerLodScale, error) {
+func readLodScale(r io.Reader) (TransformerLodScale, error) {
 	var ls TransformerLodScale
 	var minScale uint8
 	var maxScale uint8

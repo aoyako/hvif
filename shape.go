@@ -70,21 +70,21 @@ func readShape(r io.Reader) (Shape, error) {
 			return s, fmt.Errorf("reading flags: %w", err)
 		}
 		if flags&shapeFlagTransform != 0 {
-			t, err := ReadAffine(r)
+			t, err := readAffine(r)
 			if err != nil {
 				return s, fmt.Errorf("reading affine transformer: %w", err)
 			}
 			s.Transforms = append(s.Transforms, t)
 		}
 		if flags&shapeFlagTranslation != 0 {
-			t, err := ReadTranslation(r)
+			t, err := readTranslation(r)
 			if err != nil {
 				return s, fmt.Errorf("read translation %w", err)
 			}
 			s.Transforms = append(s.Transforms, t)
 		}
 		if flags&shapeFlagLodScale != 0 {
-			t, err := ReadLodScale(r)
+			t, err := readLodScale(r)
 			if err != nil {
 				return s, fmt.Errorf("read lod scale: %w", err)
 			}
@@ -97,7 +97,7 @@ func readShape(r io.Reader) (Shape, error) {
 				return s, fmt.Errorf("reading transformers count: %w", err)
 			}
 			for i := uint8(0); i < count; i++ {
-				t, err := ReadTransformer(r)
+				t, err := readTransformer(r)
 				if err != nil {
 					return s, fmt.Errorf("reading transformer [%d]: %w", i, err)
 				}
