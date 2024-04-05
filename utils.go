@@ -7,7 +7,7 @@ import (
 	"math"
 )
 
-func ReadFloatCoord(r io.Reader) (float32, error) {
+func readFloatCoord(r io.Reader) (float32, error) {
 	var val uint16
 	var x uint8
 	if err := binary.Read(r, binary.LittleEndian, &x); err != nil {
@@ -26,7 +26,7 @@ func ReadFloatCoord(r io.Reader) (float32, error) {
 	return float32(val) - 32.0, nil
 }
 
-func ReadFloat24(r io.Reader) (float32, error) {
+func readFloat24(r io.Reader) (float32, error) {
 	var b1 uint8
 	err := binary.Read(r, binary.LittleEndian, &b1)
 	if err != nil {
@@ -58,12 +58,12 @@ func ReadFloat24(r io.Reader) (float32, error) {
 	return math.Float32frombits(bits), nil
 }
 
-func ReadMatrix(r io.Reader, size int) ([]float32, error) {
+func readMatrix(r io.Reader, size int) ([]float32, error) {
 	res := make([]float32, size)
 	var err error
 
 	for i := 0; i < size; i++ {
-		res[i], err = ReadFloat24(r)
+		res[i], err = readFloat24(r)
 		if err != nil {
 			return res, fmt.Errorf("reading float24: %w", err)
 		}

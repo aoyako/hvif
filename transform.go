@@ -74,7 +74,7 @@ type TransformerStroke struct {
 
 func readAffine(r io.Reader) (TransformerAffine, error) {
 	var t TransformerAffine
-	mx, err := ReadMatrix(r, transformMatrixSize)
+	mx, err := readMatrix(r, transformMatrixSize)
 	if err != nil {
 		return t, fmt.Errorf("reading matrix: %w", err)
 	}
@@ -108,7 +108,7 @@ func readCountour(r io.Reader) (TransformerContour, error) {
 
 func readTransformerPerspective(r io.Reader) (TransformerPerspective, error) {
 	var t TransformerPerspective
-	mx, err := ReadMatrix(r, perspectiveMatrixSize)
+	mx, err := readMatrix(r, perspectiveMatrixSize)
 	if err != nil {
 		return t, fmt.Errorf("reading matrix: %w", err)
 	}
@@ -179,11 +179,11 @@ func readTransformer(r io.Reader) (Transformer, error) {
 
 func readTranslation(r io.Reader) (TransformerTranslation, error) {
 	var t TransformerTranslation
-	x, err := ReadFloatCoord(r)
+	x, err := readFloatCoord(r)
 	if err != nil {
 		return t, fmt.Errorf("read x coord: %w", err)
 	}
-	y, err := ReadFloatCoord(r)
+	y, err := readFloatCoord(r)
 	if err != nil {
 		return t, fmt.Errorf("read y coord: %w", err)
 	}

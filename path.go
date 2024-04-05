@@ -57,11 +57,11 @@ type Path struct {
 
 func readPoint(r io.Reader) (Point, error) {
 	var p Point
-	x, err := ReadFloatCoord(r)
+	x, err := readFloatCoord(r)
 	if err != nil {
 		return p, fmt.Errorf("read x coord: %w", err)
 	}
-	y, err := ReadFloatCoord(r)
+	y, err := readFloatCoord(r)
 	if err != nil {
 		return p, fmt.Errorf("read y coord: %w", err)
 	}
@@ -123,13 +123,13 @@ func readPath(r io.Reader) (Path, error) {
 			var line interface{}
 			switch pathCommandTypes[i] {
 			case pathCommandHLine:
-				c, err := ReadFloatCoord(r)
+				c, err := readFloatCoord(r)
 				if err != nil {
 					return path, fmt.Errorf("reading hline coord: %w", err)
 				}
 				line = HLine{c}
 			case pathCommandVLine:
-				c, err := ReadFloatCoord(r)
+				c, err := readFloatCoord(r)
 				if err != nil {
 					return path, fmt.Errorf("reading vline coord: %w", err)
 				}
