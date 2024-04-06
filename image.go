@@ -4,6 +4,8 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
+
+	"slices"
 )
 
 type Image struct {
@@ -83,7 +85,10 @@ func (i *Image) GetShapes() []*Shape {
 }
 
 func (i *Image) GetShapeStyle(s *Shape) Style {
-	return i.styles[s.styleID]
+	if s.styleID == nil {
+		return nil
+	}
+	return i.styles[*s.styleID]
 }
 
 func (i *Image) GetShapePathes(s *Shape) []*Path {
@@ -93,4 +98,29 @@ func (i *Image) GetShapePathes(s *Shape) []*Path {
 	}
 
 	return res
+}
+
+func (i *Image) AddStyle(s Style) {
+	i.styles = append(i.styles, s)
+}
+
+func (i *Image) AddPath(p *Path) {
+	i.pathes = append(i.pathes, p)
+}
+
+func (i *Image) AddShape(sp *Shape) {
+	i.shapes = append(i.shapes, sp)
+}
+
+func (i *Image) RemoveStyle(s Style) {
+	styleID := slices.Index(i.styles, s)
+	if styleID == -1 {
+		return
+	}
+
+	for _, sp := range i.shapes {
+		if sp.styleID != nil && *sp.styleID == uint8(styleID) {
+			sp.styleID = nil
+		}
+	}
 }
