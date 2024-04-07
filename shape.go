@@ -79,14 +79,14 @@ func readShape(r io.Reader) (*Shape, error) {
 		if flags&shapeFlagTranslation != 0 {
 			t, err := readTranslation(r)
 			if err != nil {
-				return nil, fmt.Errorf("read translation %w", err)
+				return nil, fmt.Errorf("reading translation %w", err)
 			}
 			s.Transforms = append(s.Transforms, t)
 		}
 		if flags&shapeFlagLodScale != 0 {
 			t, err := readLodScale(r)
 			if err != nil {
-				return nil, fmt.Errorf("read lod scale: %w", err)
+				return nil, fmt.Errorf("reading lod scale: %w", err)
 			}
 			s.Transforms = append(s.Transforms, t)
 		}
@@ -96,7 +96,7 @@ func readShape(r io.Reader) (*Shape, error) {
 			if err != nil {
 				return nil, fmt.Errorf("reading transformers count: %w", err)
 			}
-			for i := uint8(0); i < count; i++ {
+			for i := range count {
 				t, err := readTransformer(r)
 				if err != nil {
 					return nil, fmt.Errorf("reading transformer [%d]: %w", i, err)

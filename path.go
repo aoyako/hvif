@@ -59,11 +59,11 @@ func readPoint(r io.Reader) (Point, error) {
 	var p Point
 	x, err := readFloatCoord(r)
 	if err != nil {
-		return p, fmt.Errorf("read x coord: %w", err)
+		return p, fmt.Errorf("reading x coord: %w", err)
 	}
 	y, err := readFloatCoord(r)
 	if err != nil {
-		return p, fmt.Errorf("read y coord: %w", err)
+		return p, fmt.Errorf("reading y coord: %w", err)
 	}
 	p.X = x
 	p.Y = y
@@ -74,7 +74,7 @@ func readPoint(r io.Reader) (Point, error) {
 func splitCommandTypes(rawTypes []uint8, count uint8) []pathCommandType {
 	pct := make([]pathCommandType, 0, count)
 	const pctsPerByte = (byteSizeBits / pathCommandSizeBits)
-	for i := uint8(0); i < count; i++ {
+	for i := range count {
 		segment := i / pctsPerByte
 		shift := i % pctsPerByte
 
@@ -121,7 +121,11 @@ func readPath(r io.Reader) (*Path, error) {
 		// Each command is 2 bits, aligned in a byte
 		bytesForCommandTypes := uint8(math.Ceil(pathCommandSizeBits * float64(count) / byteSizeBits))
 		pathRawCommandTypes := make([]uint8, bytesForCommandTypes)
-		binary.Read(r, binary.LittleEndian, &pathRawCommandTypes)
+		err = binary.Read(r, binary.LittleEndian, &pathRawCommandTypes)
+		if err != nil {
+			return nil, fmt.Errorf("reading commands: %w", err)
+		}
+
 		pathCommandTypes := splitCommandTypes(pathRawCommandTypes, count)
 
 		var points []PathElement

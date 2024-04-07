@@ -4,7 +4,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
-
 	"slices"
 )
 
@@ -33,7 +32,7 @@ func ReadImage(r io.Reader) (*Image, error) {
 		return nil, fmt.Errorf("reading styles count: %w", err)
 	}
 
-	for i := uint8(0); i < styleCount; i++ {
+	for i := range styleCount {
 		s, err := readStyle(r)
 		if err != nil {
 			return nil, fmt.Errorf("reading style [%d]: %w", i, err)
@@ -47,7 +46,7 @@ func ReadImage(r io.Reader) (*Image, error) {
 		return nil, fmt.Errorf("reading pathes count: %w", err)
 	}
 
-	for i := uint8(0); i < pathCount; i++ {
+	for i := range pathCount {
 		p, err := readPath(r)
 		if err != nil {
 			return nil, fmt.Errorf("reading path [%d]: %w", i, err)
@@ -61,7 +60,7 @@ func ReadImage(r io.Reader) (*Image, error) {
 		return nil, fmt.Errorf("reading shapes count: %w", err)
 	}
 
-	for i := uint8(0); i < shapeCount; i++ {
+	for i := range shapeCount {
 		s, err := readShape(r)
 		if err != nil {
 			return nil, fmt.Errorf("reading shape [%d]: %w", i, err)
@@ -88,11 +87,12 @@ func (i *Image) GetShapeStyle(s *Shape) Style {
 	if s.styleID == nil {
 		return nil
 	}
+
 	return i.styles[*s.styleID]
 }
 
 func (i *Image) GetShapePathes(s *Shape) []*Path {
-	var res []*Path
+	res := make([]*Path, 0, len(s.pathIDs))
 	for pid := range s.pathIDs {
 		res = append(res, i.pathes[pid])
 	}

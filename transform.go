@@ -175,7 +175,7 @@ func readTransformer(r io.Reader) (Transformer, error) {
 	case transformerTypeStroke:
 		t, err := readTransformerStroke(r)
 		if err != nil {
-			return t, fmt.Errorf("read stroke transformer: %w", err)
+			return t, fmt.Errorf("reaiding stroke transformer: %w", err)
 		}
 
 		return t, nil
@@ -188,11 +188,11 @@ func readTranslation(r io.Reader) (TransformerTranslation, error) {
 	var t TransformerTranslation
 	x, err := readFloatCoord(r)
 	if err != nil {
-		return t, fmt.Errorf("read x coord: %w", err)
+		return t, fmt.Errorf("reading x coord: %w", err)
 	}
 	y, err := readFloatCoord(r)
 	if err != nil {
-		return t, fmt.Errorf("read y coord: %w", err)
+		return t, fmt.Errorf("reading y coord: %w", err)
 	}
 	t.X = x
 	t.Y = y
