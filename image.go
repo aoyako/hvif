@@ -117,10 +117,45 @@ func (i *Image) RemoveStyle(s Style) {
 	if styleID == -1 {
 		return
 	}
+	i.styles = slices.Delete(i.styles, styleID, styleID+1)
 
 	for _, sp := range i.shapes {
+		// Shift style by one
+		if sp.styleID != nil && *sp.styleID > uint8(styleID) {
+			*sp.styleID--
+		}
 		if sp.styleID != nil && *sp.styleID == uint8(styleID) {
 			sp.styleID = nil
 		}
 	}
+}
+
+func (i *Image) RemovePath(p *Path) {
+	pathID := slices.Index(i.pathes, p)
+	if pathID == -1 {
+		return
+	}
+	i.pathes = slices.Delete(i.pathes, pathID, pathID+1)
+
+	for _, sp := range i.shapes {
+		// TODO: Optimize to 0 allocs?
+		newPathIDs := make([]uint8, 0, len(sp.pathIDs))
+		for _, pid := range sp.pathIDs {
+			if pid != uint8(pathID) {
+				if pid > uint8(pathID) {
+					pid--
+				}
+				newPathIDs = append(newPathIDs, pid)
+			}
+		}
+		sp.pathIDs = newPathIDs
+	}
+}
+
+func (i *Image) RemoveShape(sp *Shape) {
+	shapeID := slices.Index(i.shapes, sp)
+	if shapeID == -1 {
+		return
+	}
+	i.shapes = slices.Delete(i.shapes, shapeID, shapeID+1)
 }

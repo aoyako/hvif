@@ -43,12 +43,12 @@ func readShape(r io.Reader) (*Shape, error) {
 	}
 
 	if stype == shapePathSource {
-		var styleID *uint8
-		err := binary.Read(r, binary.LittleEndian, styleID)
+		var styleID uint8
+		err := binary.Read(r, binary.LittleEndian, &styleID)
 		if err != nil {
 			return nil, fmt.Errorf("reading style id: %w", err)
 		}
-		s.styleID = styleID
+		s.styleID = &styleID
 
 		var pathCount uint8
 		err = binary.Read(r, binary.LittleEndian, &pathCount)
