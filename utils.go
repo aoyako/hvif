@@ -29,6 +29,12 @@ func readFloatCoord(r io.Reader) (float32, error) {
 	return float32(val) - 32.0, nil
 }
 
+func writeFloatCoord(w io.Writer, val float32) error {
+	val += 32.0
+
+	return nil
+}
+
 func readFloat24(r io.Reader) (float32, error) {
 	var b1 uint8
 	err := binary.Read(r, binary.LittleEndian, &b1)
