@@ -137,25 +137,25 @@ func readPath(r io.Reader) (*Path, error) {
 				if err != nil {
 					return nil, fmt.Errorf("reading hline coord: %w", err)
 				}
-				line = HLine{c}
+				line = &HLine{c}
 			case pathCommandVLine:
 				c, err := readFloatCoord(r)
 				if err != nil {
 					return nil, fmt.Errorf("reading vline coord: %w", err)
 				}
-				line = VLine{c}
+				line = &VLine{c}
 			case pathCommandLine:
 				p, err := readPoint(r)
 				if err != nil {
 					return nil, fmt.Errorf("reading point: %w", err)
 				}
-				line = p
+				line = &p
 			case pathCommandCurve:
 				c, err := readCurve(r)
 				if err != nil {
 					return nil, fmt.Errorf("reading curve: %w", err)
 				}
-				line = c
+				line = &c
 			}
 			points = append(points, line)
 		}
@@ -173,7 +173,7 @@ func readPath(r io.Reader) (*Path, error) {
 			if err != nil {
 				return nil, fmt.Errorf("reading curve: %w", err)
 			}
-			points = append(points, c)
+			points = append(points, &c)
 		}
 		path.Elements = points
 	}

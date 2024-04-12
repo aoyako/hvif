@@ -19,6 +19,11 @@ func isNilOrObject(e any, a any) bool {
 	return false
 }
 
+func asserPointsAreEqual(t *testing.T, e, a Point, msg any) {
+	assert.InDelta(t, e.X, a.X, 0.1, msg)
+	assert.InDelta(t, e.Y, a.Y, 0.1, msg)
+}
+
 func TestRead(t *testing.T) {
 	testdata := []struct {
 		file  string
@@ -134,6 +139,31 @@ func TestRead(t *testing.T) {
 						},
 					},
 				},
+				pathes: []*Path{
+					{
+						isClosed: true, Elements: []PathElement{
+							&Curve{PointIn: Point{18, 22}, Point: Point{18, 22}, PointOut: Point{18, 22}},
+							&Curve{PointIn: Point{18, 56}, Point: Point{18, 56}, PointOut: Point{34, 56}},
+							&Curve{PointIn: Point{38, 44}, Point: Point{34, 48}, PointOut: Point{38, 44}},
+							&Curve{PointIn: Point{44, 46}, Point: Point{40, 46}, PointOut: Point{48, 46}},
+							&Curve{PointIn: Point{55, 45}, Point: Point{54, 46}, PointOut: Point{56, 44}},
+							&Curve{PointIn: Point{64, 42}, Point: Point{64, 45}, PointOut: Point{64, 40}},
+							&Curve{PointIn: Point{61, 39}, Point: Point{59.9, 39.9}, PointOut: Point{61, 39}},
+							&Curve{PointIn: Point{62, 34}, Point: Point{62, 37}, PointOut: Point{62, 28}},
+							&Curve{PointIn: Point{50, 22}, Point: Point{58, 26}, PointOut: Point{50, 22}},
+						},
+					},
+					{
+						isClosed: true, Elements: []PathElement{
+							&Curve{PointIn: Point{2, 38}, Point: Point{2, 24}, PointOut: Point{2, 48}},
+							&Curve{PointIn: Point{18, 52}, Point: Point{12, 52}, PointOut: Point{30, 52}},
+							&Curve{PointIn: Point{33, 41}, Point: Point{29, 45}, PointOut: Point{37, 37}},
+							&Curve{PointIn: Point{44, 42}, Point: Point{39, 42}, PointOut: Point{54, 42}},
+							&Curve{PointIn: Point{58, 28}, Point: Point{58, 36}, PointOut: Point{58, 20}},
+							&Curve{PointIn: Point{38, 14}, Point: Point{48, 14}, PointOut: Point{20, 14}},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -172,6 +202,40 @@ func TestRead(t *testing.T) {
 				assert.InDeltaSlice(t, expected.Transformable.Matrix[:], actual.Transformable.Matrix[:], 0.01, i)
 			default:
 				assert.Failf(t, "unrecognized style", "[%d] type: %s", i, reflect.TypeOf(aStyles[i]))
+			}
+		}
+
+		// Pathes
+		aPathes := img.GetPathes()
+		ePathes := tc.image.pathes
+		// assert.Len(t, aPathes, len(ePathes))
+		for i := range len(aPathes[:2]) {
+			assert.Equal(t, reflect.TypeOf(aPathes[i]), reflect.TypeOf(ePathes[i]), i)
+
+			assert.Equal(t, aPathes[i].isClosed, ePathes[i].isClosed, i)
+			for pathID := range len(aPathes[i].Elements) {
+				switch actual := aPathes[i].Elements[pathID].(type) {
+				case *Point:
+					expected, ok := ePathes[i].Elements[pathID].(*Point)
+					assert.True(t, ok)
+					asserPointsAreEqual(t, *expected, *actual, i)
+				case *HLine:
+					expected, ok := ePathes[i].Elements[pathID].(*HLine)
+					assert.True(t, ok)
+					assert.InDeltaSlice(t, expected.X, actual.X, 0.1, i)
+				case *VLine:
+					expected, ok := ePathes[i].Elements[pathID].(*VLine)
+					assert.True(t, ok)
+					assert.InDeltaSlice(t, expected.Y, actual.Y, 0.1, i)
+				case *Curve:
+					expected, ok := ePathes[i].Elements[pathID].(*Curve)
+					assert.True(t, ok)
+					asserPointsAreEqual(t, expected.PointIn, actual.PointIn, i)
+					asserPointsAreEqual(t, expected.PointOut, actual.PointOut, i)
+					asserPointsAreEqual(t, expected.Point, actual.Point, i)
+				default:
+					assert.Failf(t, "unrecognized path", "[%d] type: %s", i, reflect.TypeOf(aPathes[i].Elements[pathID]))
+				}
 			}
 		}
 	}
