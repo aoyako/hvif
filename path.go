@@ -85,12 +85,12 @@ func splitCommandTypes(rawTypes []uint8, count uint8) []pathCommandType {
 	return pct
 }
 
-func readPath(r io.Reader) (*Path, error) {
-	path := &Path{}
+func readPath(r io.Reader) (Path, error) {
+	var path Path
 	var flag pathFlag
 	err := binary.Read(r, binary.LittleEndian, &flag)
 	if err != nil {
-		return nil, fmt.Errorf("reading flags: %w", err)
+		return path, fmt.Errorf("reading flags: %w", err)
 	}
 	path.isClosed = flag&pathFlagClosed != 0
 
@@ -99,14 +99,14 @@ func readPath(r io.Reader) (*Path, error) {
 		var count uint8
 		err := binary.Read(r, binary.LittleEndian, &count)
 		if err != nil {
-			return nil, fmt.Errorf("reading count for path no curves: %w", err)
+			return path, fmt.Errorf("reading count for path no curves: %w", err)
 		}
 
 		var points []PathElement
 		for i := byte(0); i < count; i++ {
 			p, err := readPoint(r)
 			if err != nil {
-				return nil, fmt.Errorf("reading point: %w", err)
+				return path, fmt.Errorf("reading point: %w", err)
 			}
 			points = append(points, p)
 		}
@@ -115,7 +115,7 @@ func readPath(r io.Reader) (*Path, error) {
 		var count uint8
 		err := binary.Read(r, binary.LittleEndian, &count)
 		if err != nil {
-			return nil, fmt.Errorf("reading count for path with commands: %w", err)
+			return path, fmt.Errorf("reading count for path with commands: %w", err)
 		}
 
 		// Each command is 2 bits, aligned in a byte
@@ -123,7 +123,7 @@ func readPath(r io.Reader) (*Path, error) {
 		pathRawCommandTypes := make([]uint8, bytesForCommandTypes)
 		err = binary.Read(r, binary.LittleEndian, &pathRawCommandTypes)
 		if err != nil {
-			return nil, fmt.Errorf("reading commands: %w", err)
+			return path, fmt.Errorf("reading commands: %w", err)
 		}
 
 		pathCommandTypes := splitCommandTypes(pathRawCommandTypes, count)
@@ -135,25 +135,25 @@ func readPath(r io.Reader) (*Path, error) {
 			case pathCommandHLine:
 				c, err := readFloatCoord(r)
 				if err != nil {
-					return nil, fmt.Errorf("reading hline coord: %w", err)
+					return path, fmt.Errorf("reading hline coord: %w", err)
 				}
 				line = &HLine{c}
 			case pathCommandVLine:
 				c, err := readFloatCoord(r)
 				if err != nil {
-					return nil, fmt.Errorf("reading vline coord: %w", err)
+					return path, fmt.Errorf("reading vline coord: %w", err)
 				}
 				line = &VLine{c}
 			case pathCommandLine:
 				p, err := readPoint(r)
 				if err != nil {
-					return nil, fmt.Errorf("reading point: %w", err)
+					return path, fmt.Errorf("reading point: %w", err)
 				}
 				line = &p
 			case pathCommandCurve:
 				c, err := readCurve(r)
 				if err != nil {
-					return nil, fmt.Errorf("reading curve: %w", err)
+					return path, fmt.Errorf("reading curve: %w", err)
 				}
 				line = &c
 			}
@@ -165,13 +165,13 @@ func readPath(r io.Reader) (*Path, error) {
 		var count uint8
 		err := binary.Read(r, binary.LittleEndian, &count)
 		if err != nil {
-			return nil, fmt.Errorf("reading count for curves: %w", err)
+			return path, fmt.Errorf("reading count for curves: %w", err)
 		}
 		var points []PathElement
 		for i := byte(0); i < count; i++ {
 			c, err := readCurve(r)
 			if err != nil {
-				return nil, fmt.Errorf("reading curve: %w", err)
+				return path, fmt.Errorf("reading curve: %w", err)
 			}
 			points = append(points, &c)
 		}

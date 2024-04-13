@@ -24,6 +24,10 @@ func asserPointsAreEqual(t *testing.T, e, a Point, msg any) {
 	assert.InDelta(t, e.Y, a.Y, 0.1, msg)
 }
 
+func getPointer(x uint8) *uint8 {
+	return &x
+}
+
 func TestRead(t *testing.T) {
 	testdata := []struct {
 		file  string
@@ -148,7 +152,7 @@ func TestRead(t *testing.T) {
 							&Curve{PointIn: Point{44, 46}, Point: Point{40, 46}, PointOut: Point{48, 46}},
 							&Curve{PointIn: Point{55, 45}, Point: Point{54, 46}, PointOut: Point{56, 44}},
 							&Curve{PointIn: Point{64, 42}, Point: Point{64, 45}, PointOut: Point{64, 40}},
-							&Curve{PointIn: Point{61, 39}, Point: Point{59.9, 39.9}, PointOut: Point{61, 39}},
+							&Curve{PointIn: Point{61, 39}, Point: Point{60, 40}, PointOut: Point{61, 39}},
 							&Curve{PointIn: Point{62, 34}, Point: Point{62, 37}, PointOut: Point{62, 28}},
 							&Curve{PointIn: Point{50, 22}, Point: Point{58, 26}, PointOut: Point{50, 22}},
 						},
@@ -163,6 +167,11 @@ func TestRead(t *testing.T) {
 							&Curve{PointIn: Point{38, 14}, Point: Point{48, 14}, PointOut: Point{20, 14}},
 						},
 					},
+				},
+				shapes: []*Shape{
+					{Hinting: false, styleID: getPointer(0), pathIDs: []uint8{0}, Transforms: nil},
+					{Hinting: false, styleID: getPointer(1), pathIDs: []uint8{3, 4, 5},
+						Transforms: []Transformer{&TransformerStroke{Width: 4, LineJoin: MiterJoin, LineCap: ButtCap, MiterLimit: 4}}},
 				},
 			},
 		},
@@ -208,7 +217,7 @@ func TestRead(t *testing.T) {
 		// Pathes
 		aPathes := img.GetPathes()
 		ePathes := tc.image.pathes
-		// assert.Len(t, aPathes, len(ePathes))
+		assert.Len(t, aPathes, 10)
 		for i := range len(aPathes[:2]) {
 			assert.Equal(t, reflect.TypeOf(aPathes[i]), reflect.TypeOf(ePathes[i]), i)
 
@@ -238,6 +247,28 @@ func TestRead(t *testing.T) {
 				}
 			}
 		}
-	}
 
+		aShapes := img.GetShapes()
+		eShapes := tc.image.shapes
+		assert.Len(t, aShapes, 14)
+		for i := range len(aShapes[:2]) {
+			assert.Equal(t, reflect.TypeOf(aShapes[i]), reflect.TypeOf(aShapes[i]), i)
+
+			assert.Equal(t, aShapes[i].Hinting, eShapes[i].Hinting, i)
+			assert.True(t, isNilOrObject(aShapes[i].styleID, eShapes[i].styleID), i)
+			if aShapes[i].styleID != nil {
+				assert.Equal(t, *aShapes[i].styleID, *eShapes[i].styleID, i)
+			}
+			assert.Equal(t, aShapes[i].pathIDs, eShapes[i].pathIDs, i)
+
+			assert.True(t, isNilOrObject(aShapes[i].Transforms, eShapes[i].Transforms), i)
+
+			assert.Len(t, aShapes[i].Transforms, len(eShapes[i].Transforms), i)
+			for tID := range len(eShapes[i].Transforms) {
+				aTrans := aShapes[i].Transforms[tID]
+				eTrans := eShapes[i].Transforms[tID]
+				assert.True(t, reflect.DeepEqual(aTrans, eTrans))
+			}
+		}
+	}
 }

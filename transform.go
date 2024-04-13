@@ -39,7 +39,7 @@ const (
 )
 
 // TransformerTranslation | TransformerLodScale | TransformerAffine |
-// TransformerPerspective | TransformerContour | TransformerStroke.
+// TransformerPerspective | TransformerContour | TransformerStroke
 type Transformer any
 
 type TransformerTranslation struct {
@@ -158,12 +158,12 @@ func readTransformer(r io.Reader) (Transformer, error) {
 			return nil, fmt.Errorf("reading affine transformer: %w", err)
 		}
 
-		return t, nil
+		return &t, nil
 	case transformerTypeContour:
 		if t, err := readCountour(r); err != nil {
 			return nil, fmt.Errorf("reading countour: %w", err)
 		} else {
-			return t, nil
+			return &t, nil
 		}
 	case transformerTypePerspective:
 		t, err := readTransformerPerspective(r)
@@ -171,14 +171,14 @@ func readTransformer(r io.Reader) (Transformer, error) {
 			return nil, fmt.Errorf("reading perspective transformer: %w", err)
 		}
 
-		return t, nil
+		return &t, nil
 	case transformerTypeStroke:
 		t, err := readTransformerStroke(r)
 		if err != nil {
 			return t, fmt.Errorf("reaiding stroke transformer: %w", err)
 		}
 
-		return t, nil
+		return &t, nil
 	}
 
 	return nil, fmt.Errorf("unknown transformer: %d", ttype)

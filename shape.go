@@ -24,90 +24,87 @@ const (
 )
 
 type Shape struct {
-	Hinting bool
-	styleID *uint8
-	pathIDs []uint8
-	// Transform  *utils.Transformable
-	// Translate  *utils.Translation
-	// LodScale   *utils.LodScale
+	Hinting    bool
+	styleID    *uint8
+	pathIDs    []uint8
 	Transforms []Transformer
 }
 
-func readShape(r io.Reader) (*Shape, error) {
-	s := &Shape{}
+func readShape(r io.Reader) (Shape, error) {
+	var shape Shape
 	var stype shapeType
 
 	err := binary.Read(r, binary.LittleEndian, &stype)
 	if err != nil {
-		return nil, fmt.Errorf("reading type: %w", err)
+		return shape, fmt.Errorf("reading type: %w", err)
 	}
 
 	if stype == shapePathSource {
 		var styleID uint8
 		err := binary.Read(r, binary.LittleEndian, &styleID)
 		if err != nil {
-			return nil, fmt.Errorf("reading style id: %w", err)
+			return shape, fmt.Errorf("reading style id: %w", err)
 		}
-		s.styleID = &styleID
+		shape.styleID = &styleID
 
 		var pathCount uint8
 		err = binary.Read(r, binary.LittleEndian, &pathCount)
 		if err != nil {
-			return nil, fmt.Errorf("reading path count: %w", err)
+			return shape, fmt.Errorf("reading path count: %w", err)
 		}
 		for i := byte(0); i < pathCount; i++ {
 			var pathID uint8
 			err := binary.Read(r, binary.LittleEndian, &pathID)
 			if err != nil {
-				return nil, fmt.Errorf("reading path [%d] id: %w", i, err)
+				return shape, fmt.Errorf("reading path [%d] id: %w", i, err)
 			}
-			s.pathIDs = append(s.pathIDs, pathID)
+			shape.pathIDs = append(shape.pathIDs, pathID)
 		}
 
 		var flags shapeFlag
 		err = binary.Read(r, binary.LittleEndian, &flags)
 		if err != nil {
-			return nil, fmt.Errorf("reading flags: %w", err)
+			return shape, fmt.Errorf("reading flags: %w", err)
 		}
 		if flags&shapeFlagTransform != 0 {
 			t, err := readAffine(r)
 			if err != nil {
-				return nil, fmt.Errorf("reading affine transformer: %w", err)
+				return shape, fmt.Errorf("reading affine transformer: %w", err)
 			}
-			s.Transforms = append(s.Transforms, t)
+			shape.Transforms = append(shape.Transforms, &t)
 		}
 		if flags&shapeFlagTranslation != 0 {
 			t, err := readTranslation(r)
 			if err != nil {
-				return nil, fmt.Errorf("reading translation %w", err)
+				return shape, fmt.Errorf("reading translation %w", err)
 			}
-			s.Transforms = append(s.Transforms, t)
+			shape.Transforms = append(shape.Transforms, &t)
 		}
 		if flags&shapeFlagLodScale != 0 {
 			t, err := readLodScale(r)
 			if err != nil {
-				return nil, fmt.Errorf("reading lod scale: %w", err)
+				return shape, fmt.Errorf("reading lod scale: %w", err)
 			}
-			s.Transforms = append(s.Transforms, t)
+			shape.Transforms = append(shape.Transforms, &t)
 		}
 		if flags&shapeFlagHasTransformers != 0 {
 			var count uint8
 			err := binary.Read(r, binary.LittleEndian, &count)
 			if err != nil {
-				return nil, fmt.Errorf("reading transformers count: %w", err)
+				return shape, fmt.Errorf("reading transformers count: %w", err)
 			}
 			for i := range count {
 				t, err := readTransformer(r)
 				if err != nil {
-					return nil, fmt.Errorf("reading transformer [%d]: %w", i, err)
+					return shape, fmt.Errorf("reading transformer [%d]: %w", i, err)
 				}
-				s.Transforms = append(s.Transforms, t)
+				shape.Transforms = append(shape.Transforms, t)
 			}
 		}
 		if flags&shapeFlagHinting != 0 {
-			s.Hinting = true
+			shape.Hinting = true
 		}
 	}
 
-	return s, nil
+	return shape, nil
 }

@@ -51,7 +51,7 @@ func ReadImage(r io.Reader) (*Image, error) {
 		if err != nil {
 			return nil, fmt.Errorf("reading path [%d]: %w", i, err)
 		}
-		img.pathes = append(img.pathes, p)
+		img.pathes = append(img.pathes, &p)
 	}
 
 	var shapeCount uint8
@@ -65,7 +65,7 @@ func ReadImage(r io.Reader) (*Image, error) {
 		if err != nil {
 			return nil, fmt.Errorf("reading shape [%d]: %w", i, err)
 		}
-		img.shapes = append(img.shapes, s)
+		img.shapes = append(img.shapes, &s)
 	}
 
 	return img, nil
