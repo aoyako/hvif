@@ -1,4 +1,4 @@
-package main
+package hvif
 
 import (
 	"encoding/binary"

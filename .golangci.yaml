@@ -7,9 +7,16 @@ run:
   allow-serial-runners: true
   go: '1.22'
 
+linters-settings:
+  gofumpt:
+    module-path: .
+
 linters:
   enable-all: true
   disable:
+    - depguard
+    - gofumpt
+    - godot
     - forbidigo # tmp
     - godox
     - exhaustruct
