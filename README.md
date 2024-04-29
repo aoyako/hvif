@@ -1,5 +1,5 @@
 ## HVIF-go
-![master](https://github.com/aoyako/hvif/actions/workflows/golangci-lint.yml/badge.svg)
+![master](https://github.com/aoyako/hvif/actions/workflows/build-lint.yml/badge.svg)
 
 *HVIF (Haiku Vector Image File) is a file format used in Haiku OS for storage-efficient applications icon storage*
 
